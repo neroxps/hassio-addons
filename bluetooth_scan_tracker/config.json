@@ -1,0 +1,66 @@
+{
+  "name": "Bluetooth San Tracker",
+  "version": "0.1.1",
+  "slug": "bluetooth_scan_tracker",
+  "description": "Automatically scan Bluetooth devices in the list",
+  "arch": ["amd64"],
+  "url": "https://github.com/neroxps/hassio-addons/tree/master/bluetooth_scan_tracker",
+  "startup": "application",
+  "boot": "auto",
+  "host_network": "true",
+  "ports": {},
+  "map": [],
+  "options": {
+    "sleep_time":"2",
+    "mqtt_address":"192.168.1.100",
+    "mqtt_user":"username",
+    "mqtt_password":"password",
+    "mqtt_port":"1883",
+    "mqtt_topic":"/ble/tracker",
+    "blue_list":[
+        {
+        	"name":"tom",
+        	"mac": "01:23:45:67:89:AB"
+        },
+        {
+          "name":"Jack",
+          "mac": "01:23:45:67:89:AB"
+        },
+        {
+          "name":"Elspie",
+          "mac": "01:23:45:67:89:AB"
+        },
+        {
+          "name":"Gawain",
+          "mac": "01:23:45:67:89:AB"
+        }
+      ]
+  },
+  "schema": {
+    "sleep_time":"int?",
+    "mqtt_address":"str",
+    "mqtt_user":"str",
+    "mqtt_password":"str",
+    "mqtt_port":"port?",
+    "mqtt_topic":"str",
+    "blue_list":[
+        {
+          "name":"str",
+          "mac": "str"
+        },
+        {
+          "name":"str",
+          "mac": "str"
+        },
+        {
+          "name":"str",
+          "mac": "str"
+        },
+        {
+          "name":"str",
+          "mac": "str"
+        }
+      ]
+  },
+  "image": "neroxps/{arch}-bluetooth-scan-tracker-addon"
+}
