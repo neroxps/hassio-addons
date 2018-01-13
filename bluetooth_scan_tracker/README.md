@@ -40,7 +40,7 @@
 |---|---|---|---|
 | sleep_time | × | 扫描间隔，默认 5 秒 | 2 |
 | mqtt_address | √ | MQTT 地址 | 192.168.1.1 |
-| mqtt_user | √ | C1 | username |
+| mqtt_user | √ | MQTT 用户名 | username |
 | mqtt_password | √ | MQTT 密码 | password |
 | mqtt_port | × | MQTT 服务监听端口默认:1883 | 1883 |
 | mqtt_topic | √ | MQTT 主题，与 Home Assistant 配置配合使用 | /ble/tracker |
