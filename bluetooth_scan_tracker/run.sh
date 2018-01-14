@@ -1,7 +1,8 @@
 #!/bin/bash
-set -e
+#set -e
 OPTIONS="/data/options.json"
 SLEEP_NUM=$(jq --raw-output '.sleep_time' ${OPTIONS})
+TRY_NUM=$(jq --raw-output '.try_number' ${OPTIONS})
 MQTT_ADDR=$(jq --raw-output '.mqtt_address' ${OPTIONS})
 MQTT_USER=$(jq --raw-output '.mqtt_user' ${OPTIONS})
 MQTT_PWD=$(jq --raw-output '.mqtt_password' ${OPTIONS})
@@ -17,6 +18,8 @@ elif [[ ${MQTT_PORT} == "null" ]]; then
 	MQTT_PORT=1883
 elif [[ ${SLEEP_NUM} == "null" ]]; then
 	SLEEP_NUM=5
+elif [[ ${TRY_NUM} == "null" ]]; then
+	TRY_NUM=1
 elif [[ ${MQTT_ADDR} == "null" ]]; then
 	echo "MQTT_ADDR is empty, see the guide https://github.com/neroxps/hassio-addons/tree/master/bluetooth_scan_tracker"
 	exit 1
@@ -28,13 +31,29 @@ elif [[ ${BLUE_LISTS} == "null" ]]; then
 	exit 1
 fi
 
+function BLUE_SCAN(){
+	local BD_NAME
+	BD_NAME=$(hcitool name $MAC)
+	if [[ ${BD_NAME} == "" ]]; then
+		for (( a = 0; a < ${TRY_NUM}; a++ )); do
+			BD_NAME=$(hcitool name $MAC)
+			if [[ ${BD_NAME} != "" ]]; then
+				continue
+			fi
+		done
+		return 1
+	else
+		return 0
+	fi
+}
+
 #main
 while true; do
 	for (( i=0; i < "${BLUE_LISTS}"; i++ ));do
 		MAC=$(jq --raw-output ".blue_list[${i}].mac" ${OPTIONS})
 		NAME=$(jq --raw-output ".blue_list[${i}].name" ${OPTIONS})
-		DEV_BD_NAME="$(hcitool name ${MAC})"
-		if [[ "${DEV_BD_NAME}" == "" ]]; then
+		BLUE_SCAN
+		if [[ $? == 1 ]]; then
 			STATUS="not_home"
 			if [[ "${STATUS}" != "${DEV_STATUS[${i}]}" ]]; then
 				DEV_STATUS[${i}]=${STATUS}

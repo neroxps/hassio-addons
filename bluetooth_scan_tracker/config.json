@@ -1,6 +1,6 @@
 {
   "name": "Bluetooth San Tracker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "slug": "bluetooth_scan_tracker",
   "description": "Automatically scan Bluetooth devices in the list",
   "arch": ["amd64"],
