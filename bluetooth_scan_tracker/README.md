@@ -9,6 +9,7 @@
 ```json
 {
   "sleep_time":"2",
+  "try_number":"1",
   "mqtt_address":"192.168.1.100",
   "mqtt_user":"username",
   "mqtt_password":"password",
@@ -39,6 +40,7 @@
 | 选项 | 必须 | 说明 | 例子 |
 |---|---|---|---|
 | sleep_time | × | 扫描间隔，默认 5 秒 | 2 |
+| try_number | × | 未检测到设备循环次数 | 1 |
 | mqtt_address | √ | MQTT 地址 | 192.168.1.1 |
 | mqtt_user | √ | MQTT 用户名 | username |
 | mqtt_password | √ | MQTT 密码 | password |
