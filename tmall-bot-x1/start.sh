@@ -57,10 +57,15 @@ use ${MYSQL_DB_NAME};
 show tables;
 select * from oauth_clients order by redirect_uri;" 2>/dev/null
 if [[ $? -ne 0 ]]; then
-	echo "Mysql Initialization"
+	echo "Mysql Initialization....."
 	sed -i "s/%%{CLIENT_ID}%%/${CLIENT_ID}/" /bootstrap/tmall-bot-x1/tmallx1.sql
 	sed -i "s/%%{CLIENT_SECRET}%%/${CLIENT_SECRET}/" /bootstrap/tmall-bot-x1/tmallx1.sql
 	mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" ${MYSQL_DB_NAME} < /bootstrap/tmall-bot-x1/tmallx1.sql
+	mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -e "
+	use ${MYSQL_DB_NAME};
+	show tables;
+	select * from oauth_clients order by redirect_uri;" 2>/dev/null
+	echo "Done"
 fi
 echo "--------------------------------------------------------------------"
 
@@ -79,6 +84,7 @@ if [[ ! -d "${CONFIG_DIR}" ]]; then
 	sed -i "s#%%{MYSQL_HOST}%%#${MYSQL_FULL_HOST}#" ${CONFIG_DIR}/device/service.php
 	sed -i "s#%%{MYSQL_USER}%%#${MYSQL_USER}#" ${CONFIG_DIR}/device/service.php
 	sed -i "s#%%{MYSQL_PASSWD}%%#${MYSQL_PASSWD}#" ${CONFIG_DIR}/device/service.php
+	echo "Done"
 fi
 
 if [[ "${DISCOVERY}" == "true" ]] && [[ ! -d "${CONFIG_DIR}/device" ]] ; then
