@@ -1,6 +1,8 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+ENV LANG C.UTF-8
+
 ADD tmall-bot-x1 /bootstrap/tmall-bot-x1
 COPY start.sh /bootstrap/
 
