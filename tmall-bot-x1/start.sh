@@ -36,6 +36,59 @@ else
 	echo "Container timezone set to: ${CONTAINER_TIMEZONE}"
 fi
 
+
+# Set local databases
+LOCAL_MYSQL="$(jq -r ".local_mysql" $OPTIONS)"
+if [[ "${LOCAL_MYSQL}" == "true" ]]; then
+	MYSQL_HOST="localhost"
+	MYSQL_DB_NAME="tmall"
+	MYSQL_USER="tmall"
+	MYSQL_PASSWD="tmall"
+	LOGIN_HOST="localhost"
+	# Init mariadb
+	if [[ condition ]]; then
+		MARIADB_DATA="/data/databases"
+		echo "[INFO] Create a new mariadb initial system"
+		mysql_install_db --user=root --datadir="$MARIADB_DATA" > /dev/null
+	else
+		echo "[INFO] Use exists mariadb initial system"
+	fi
+
+	# Start mariadb
+	echo "[INFO] Start MariaDB"
+	mysqld_safe --datadir="$MARIADB_DATA" --user=root --skip-log-bin < /dev/null &
+	MARIADB_PID=$!
+
+	# Wait until DB is running
+	while ! mysql -e "" 2> /dev/null; do
+	    sleep 1
+	done
+
+	# Init databases
+	echo "[INFO] Init tmall database"
+    mysql -e "CREATE DATABASE ${MYSQL_DB_NAME};" 2> /dev/null || true
+
+    # Init logins
+    if mysql -e "SET PASSWORD FOR '${MYSQL_USER}'@'${LOGIN_HOST}' = PASSWORD('${MYSQL_PASSWD}');" 2> /dev/null; then
+        echo "[INFO] Update user ${MYSQL_USER}"
+    else
+        echo "[INFO] Create user ${MYSQL_USER}"
+        mysql -e "CREATE USER '${MYSQL_USER}'@'${LOGIN_HOST}' IDENTIFIED BY '${MYSQL_PASSWD}';" 2> /dev/null || true
+    fi
+
+    # Init rights
+    echo "[INFO] Alter rights for ${MYSQL_USER}@${LOGIN_HOST} - ${MYSQL_DB_NAME}"
+    mysql -e "GRANT ALL PRIVILEGES ON ${MYSQL_DB_NAME}.* TO '${MYSQL_USER}'@'${LOGIN_HOST}';" 2> /dev/null || true
+
+	# Register stop
+	function stop_mariadb() {
+	    mysqladmin shutdown
+	}
+	trap "stop_mariadb" SIGTERM SIGHUP
+
+	wait "$MARIADB_PID"
+fi
+
 # Mysql Initialization
 echo ""
 echo ""
@@ -45,7 +98,7 @@ show databases;
 use ${MYSQL_DB_NAME}
 quit"
 if [[ $? -ne 0 ]]; then
-	echo "${MYSQL_DB_NAME} database not found.Please check MYSQL_DB_NAME options or establish a database and then run."
+	echo "${MYSQL_DB_NAME} database not found.Please check MYSQL_DB_NAME options or create a database and then runing again."
 	exit 1
 fi
 echo "--------------------------------------------------------------------"
