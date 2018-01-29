@@ -1,7 +1,6 @@
 #!/bin/bash
 OPTIONS="/data/options.json"
-DEBUG="$(jq -r ".debug" $OPTIONS)"
-if ${DEBUG} ; then
+if [[ "$(jq -r ".debug" $OPTIONS)" == "true" ]]; then
 	set -x
 fi
 HA_URL="http://hassio/homeassistant"
@@ -38,6 +37,9 @@ else
 fi
 
 # Mysql Initialization
+echo ""
+echo ""
+echo "-----------------------------:Databases:---------------------------"
 mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -e "
 show databases;
 use ${MYSQL_DB_NAME}
@@ -46,19 +48,25 @@ if [[ $? -ne 0 ]]; then
 	echo "${MYSQL_DB_NAME} database not found.Please check MYSQL_DB_NAME options or establish a database and then run."
 	exit 1
 fi
-
+echo "--------------------------------------------------------------------"
+echo ""
+echo ""
+echo "-------------------------------:Tables:-----------------------------"
 mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -e "
 use ${MYSQL_DB_NAME};
 show tables;
 select * from oauth_clients order by redirect_uri;" 2>/dev/null
 if [[ $? -ne 0 ]]; then
+	echo "Mysql Initialization"
 	sed -i "s/%%{CLIENT_ID}%%/${CLIENT_ID}/" /bootstrap/tmall-bot-x1/tmallx1.sql
 	sed -i "s/%%{CLIENT_SECRET}%%/${CLIENT_SECRET}/" /bootstrap/tmall-bot-x1/tmallx1.sql
 	mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" ${MYSQL_DB_NAME} < /bootstrap/tmall-bot-x1/tmallx1.sql
 fi
+echo "--------------------------------------------------------------------"
 
 # Tmall Bot Install
 if [[ ! -d "${CONFIG_DIR}" ]]; then
+	echo "Tmall Bot Bridge install to the config"
 	cp -R /bootstrap/tmall-bot-x1 ${CONFIG_DIR:0:8}
 	sed -i "s#%%{HOMEASSISTANT_URL}%%#${HA_URL}#" ${CONFIG_DIR}/homeassistant_conf.php
 	sed -i "s#%%{YOURHOMEASSITANTPASSWORD}%%#${HA_PASSWD}#" ${CONFIG_DIR}/homeassistant_conf.php
@@ -80,11 +88,13 @@ elif [[ "${DISCOVERY}" == "false" ]] && [[ -d "${CONFIG_DIR}/device" ]]; then
 fi
 
 # Httpd Log
-if ${HTTPD_LOG}; then
+if [[ "${HTTPD_LOG}" == "true" ]]; then
+	echo "Enable httpd log"
 	echo "" > /var/log/apache2/access.log
 	tail -f /var/log/apache2/access.log &
 fi
-if ${HTTPD_ERROR_LOG}; then
+if [[ "${HTTPD_ERROR_LOG}" == "true" ]]; then
+	echo "Enable httpd error log"
 	echo "" > /var/log/apache2/error.log
 	tail -f /var/log/apache2/error.log &
 fi
