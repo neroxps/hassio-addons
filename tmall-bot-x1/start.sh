@@ -1,8 +1,11 @@
 #!/bin/bash
-set -e
 OPTIONS="/data/options.json"
-HA_URL="$(jq -r ".ha_url" $OPTIONS)"
-HA_PASSWD="$(jq -r ".ha_passwd" $OPTIONS)"
+DEBUG="$(jq -r ".debug" $OPTIONS)"
+if ${DEBUG} ; then
+	set -x
+fi
+HA_URL="http://hassio/homeassistant"
+HA_PASSWD="${HASSIO_TOKEN}"
 MYSQL_HOST="$(jq -r ".mysql_host" $OPTIONS)"
 MYSQL_DB_NAME="$(jq -r ".mysql_db_name" $OPTIONS)"
 MYSQL_USER="$(jq -r ".mysql_user" $OPTIONS)"
@@ -21,6 +24,7 @@ CONTAINER_TIMEZONE="$(jq -r ".container_timezone" $OPTIONS)"
 CONFIG_DIR="/config/tmall-bot-x1"
 HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
+
 
 # Set the timezone. Base image does not contain the setup-timezone script, so an alternate way is used.
 if [[ "${CONTAINER_TIMEZONE}" == "null" ]]; then
@@ -76,10 +80,11 @@ elif [[ "${DISCOVERY}" == "false" ]] && [[ -d "${CONFIG_DIR}/device" ]]; then
 fi
 
 # Httpd Log
-if [[ "${HTTPD_LOG}" == "true" ]]; then
+if ${HTTPD_LOG}; then
 	echo "" > /var/log/apache2/access.log
 	tail -f /var/log/apache2/access.log &
-elif [[ "${HTTPD_ERROR_LOG}" == "true" ]]; then
+fi
+if ${HTTPD_ERROR_LOG}; then
 	echo "" > /var/log/apache2/error.log
 	tail -f /var/log/apache2/error.log &
 fi
