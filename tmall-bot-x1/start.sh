@@ -45,6 +45,7 @@ if [[ "${LOCAL_MYSQL}" == "true" ]]; then
 	MYSQL_USER="tmall"
 	MYSQL_PASSWD="tmall"
 	LOGIN_HOST="localhost"
+	MYSQL_FULL_HOST="localhost"
 	# Init mariadb
 	if [[ condition ]]; then
 		MARIADB_DATA="/data/databases"
