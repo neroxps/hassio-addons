@@ -15,6 +15,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 	php7-curl \
 	jq \
 	mariadb-client \
+	mariadb \
 	&&cp /usr/bin/php7 /usr/bin/php \
     && rm -f /var/cache/apk/* \
     && mkdir /run/apache2 \
