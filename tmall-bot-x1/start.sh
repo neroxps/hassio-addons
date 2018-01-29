@@ -46,9 +46,9 @@ if [[ "${LOCAL_MYSQL}" == "true" ]]; then
 	MYSQL_PASSWD="tmall"
 	LOGIN_HOST="localhost"
 	MYSQL_FULL_HOST="localhost"
+	MARIADB_DATA="/data/databases"
 	# Init mariadb
-	if [[ condition ]]; then
-		MARIADB_DATA="/data/databases"
+	if [ ! -d "$MARIADB_DATA" ]; then
 		echo "[INFO] Create a new mariadb initial system"
 		mysql_install_db --user=root --datadir="$MARIADB_DATA" > /dev/null
 	else
