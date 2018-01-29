@@ -1,0 +1,48 @@
+{
+    "name": "tmall_bot_X1", 
+    "version": "0.0.1", 
+    "slug": "Tmall Bot X1", 
+    "description": "天猫精灵X1 接入网关", 
+    "arch": [
+        "amd64"
+    ], 
+    "url": "https://github.com/neroxps/hassio-addons/tree/master/tmall-bot-x1", 
+    "startup": "application", 
+    "boot": "auto", 
+    "homeassistant_api": true, 
+    "ports": {
+        "80/tcp": 80
+    }, 
+    "map": [
+        "config:rw"
+    ], 
+    "options": {
+        "ha_url": "https://yourhomeassitant:8123", 
+        "ha_passwd": "yourhomeassitantpassword", 
+        "mysql_host": "addon_core_mariadb", 
+        "mysql_db_name": "tmallx1", 
+        "mysql_user": "tmallx1", 
+        "mysql_passwd": "password", 
+        "mysql_port": "3306", 
+        "client_id": "qwertyuiopasdfghjkl", 
+        "client_secret": "zxcvbnmasdfghjkl", 
+        "discovery": "true", 
+        "httpd_log": "true", 
+        "httpd_error_log": "true"
+    }, 
+    "schema": {
+        "ha_url": "url", 
+        "ha_passwd": "str", 
+        "mysql_host": "str", 
+        "mysql_db_name": "str", 
+        "mysql_user": "str", 
+        "mysql_passwd": "str", 
+        "mysql_port": "port?", 
+        "client_id": "str", 
+        "client_secret": "str", 
+        "discovery": "bool", 
+        "httpd_log": "bool?", 
+        "httpd_error_log": "bool?", 
+        "container_timezone": "str?"
+    }
+}
