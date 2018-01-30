@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.3] - 2018-1-30
+- 增加其他 hassio 支持平台适配。
+
 ## [0.0.2] - 2018-1-29
 ### Added
 - 添加 LOCAL_MYSQL 选项，可让用户选择使用容器内建数据库还是外置数据库，当 LOCAL_MYSQL=true 时，所有数据库设置选项将会被脚本覆盖。
