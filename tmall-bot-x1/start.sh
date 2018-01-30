@@ -86,8 +86,6 @@ if [[ "${LOCAL_MYSQL}" == "true" ]]; then
 	    mysqladmin shutdown
 	}
 	trap "stop_mariadb" SIGTERM SIGHUP
-
-	wait "$MARIADB_PID"
 fi
 
 # Mysql Initialization
