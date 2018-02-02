@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.4] - 2018-1-30
+- 更换 web 服务器为 nginx。
+- 增加 HTTP2 支持。
+- 增加 HTTPS 支持，请将证书放置到 ssl/tmall 目录。（chain.pem|fullchain.pem|privkey.pem）
+
 ## [0.0.3] - 2018-1-30
 - 增加其他 hassio 支持平台适配。
 
