@@ -30,11 +30,11 @@ SSL="$(jq -r ".ssl" $OPTIONS)"
 if [[ "${CONTAINER_TIMEZONE}" == "null" ]]; then
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 	echo "Asia/Shanghai" >  /etc/timezone && \
-	echo "Container timezone set to: Asia/Shanghai"
+	echo "[INFO] Container timezone set to: Asia/Shanghai"
 else
     cp /usr/share/zoneinfo/${CONTAINER_TIMEZONE} /etc/localtime && \
 	echo "${CONTAINER_TIMEZONE}" >  /etc/timezone && \
-	echo "Container timezone set to: ${CONTAINER_TIMEZONE}"
+	echo "[INFO] Container timezone set to: ${CONTAINER_TIMEZONE}"
 fi
 
 
@@ -89,42 +89,55 @@ if [[ "${LOCAL_MYSQL}" == "true" ]]; then
 	trap "stop_mariadb" SIGTERM SIGHUP
 fi
 
-# Mysql Initialization
-echo ""
-echo ""
-echo "-----------------------------:Databases:---------------------------"
-mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -e "
-show databases;
-use ${MYSQL_DB_NAME}
-quit"
-if [[ $? -ne 0 ]]; then
-	echo "${MYSQL_DB_NAME} database not found.Please check MYSQL_DB_NAME options or create a database and then runing again."
+# Tmall databases initialization
+MYSQL="mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" --default-character-set=utf8 -A"
+echo "[INFO] Show database:"
+echo "----------------------------------------------------------------"
+RESULT="$($MYSQL -e "SHOW DATABASES" | grep ${MYSQL_DB_NAME})" 
+if [[ ${RESULT} == ${MYSQL_DB_NAME} ]]; then
+	$MYSQL -e "SHOW DATABASES"
+	echo  "[INFO] Find the database ${RESULT}"
+else
+	$MYSQL -e "SHOW DATABASES"
+	echo "[ERROR] ${MYSQL_DB_NAME} database not found.Please check MYSQL_DB_NAME options or create a database and then runing again."
 	exit 1
 fi
-echo "--------------------------------------------------------------------"
-echo ""
-echo ""
-echo "-------------------------------:Tables:-----------------------------"
-mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -e "
-use ${MYSQL_DB_NAME};
-show tables;
-select * from oauth_clients order by redirect_uri;" 2>/dev/null
-if [[ $? -ne 0 ]]; then
-	echo "Mysql Initialization....."
+echo "----------------------------------------------------------------"
+echo "[INFO] Show tmall tables and oauth_clients table:"
+echo "----------------------------------------------------------------"
+MYSQL_DB_TMALL="mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -D"${MYSQL_DB_NAME}" --default-character-set=utf8 -A"
+TMALL_DB_TABLES="$(${MYSQL_DB_TMALL} -N -e "show tables")"
+if [[ "${TMALL_DB_TABLES}" == "" ]]; then
+	echo "[INFO] Did not find any table"
+	echo "[INFO] Tmall databases initialization....."
 	sed -i "s/%%{CLIENT_ID}%%/${CLIENT_ID}/" /bootstrap/tmall-bot-x1/tmallx1.sql
 	sed -i "s/%%{CLIENT_SECRET}%%/${CLIENT_SECRET}/" /bootstrap/tmall-bot-x1/tmallx1.sql
-	mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" ${MYSQL_DB_NAME} < /bootstrap/tmall-bot-x1/tmallx1.sql
-	mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWD}" -P"${MYSQL_PORT}" -e "
-	use ${MYSQL_DB_NAME};
+	${MYSQL} ${MYSQL_DB_NAME} < /bootstrap/tmall-bot-x1/tmallx1.sql
+	${MYSQL_DB_TMALL} -e "
+		show tables;
+		select * from oauth_clients"
+	echo "[INFO] Done"
+else
+	RESULT="$(${MYSQL_DB_TMALL} -N -e "select * from oauth_clients")"
+	DB_CLIENT_ID="$(echo "${RESULT}" | awk '{print $1}')"
+	DB_CLIENT_SECRET="$(echo "${RESULT}" | awk '{print $2}')"
+	if [[ "${DB_CLIENT_ID}" != "${CLIENT_ID}" ]] || [[ "${DB_CLIENT_SECRET}" != "${CLIENT_SECRET}" ]]; then
+		echo "[INFO] update oauth_clients......"
+		${MYSQL_DB_TMALL} -e "
+			UPDATE oauth_clients
+			SET client_id=\"${CLIENT_ID}\",client_secret=\"${CLIENT_SECRET}\"
+			WHERE client_id=\"${DB_CLIENT_ID}\" AND client_secret=\"${DB_CLIENT_SECRET}\"
+		"
+	fi
+	$MYSQL_DB_TMALL -e "
 	show tables;
-	select * from oauth_clients order by redirect_uri;" 2>/dev/null
-	echo "Done"
+	select * from oauth_clients order by redirect_uri"
 fi
-echo "--------------------------------------------------------------------"
+echo "----------------------------------------------------------------"
 
 # Tmall Bot Install
 if [[ ! -d "${CONFIG_DIR}" ]]; then
-	echo "Tmall Bot Bridge install to the config"
+	echo "[INFO] Tmall Bot Bridge install to the config"
 	cp -R /bootstrap/tmall-bot-x1 ${CONFIG_DIR:0:8}
 	rm -f "${CONFIG_DIR}/tmallx1.sql"
 	sed -i "s#%%{HOMEASSISTANT_URL}%%#${HA_URL}#" ${CONFIG_DIR}/homeassistant_conf.php
@@ -138,7 +151,7 @@ if [[ ! -d "${CONFIG_DIR}" ]]; then
 	sed -i "s#%%{MYSQL_HOST}%%#${MYSQL_FULL_HOST}#" ${CONFIG_DIR}/device/service.php
 	sed -i "s#%%{MYSQL_USER}%%#${MYSQL_USER}#" ${CONFIG_DIR}/device/service.php
 	sed -i "s#%%{MYSQL_PASSWD}%%#${MYSQL_PASSWD}#" ${CONFIG_DIR}/device/service.php
-	echo "Done"
+	echo "[INFO] Done"
 fi
 
 # run php-fpm
@@ -151,14 +164,14 @@ php-fpm
 
 # Nginx Log
 if [[ "${HTTPD_LOG}" == "true" ]]; then
-	echo "Enable Nginx log"
-	echo "" > /var/log/nginx/access.log
-	tail -f /var/log/nginx/access.log &
+	echo "[INFO] Enable Nginx log"
+	echo "" > /var/log/nginx/tmall.access.log
+	tail -f /var/log/nginx/tmall.access.log &
 fi
 if [[ "${HTTPD_ERROR_LOG}" == "true" ]]; then
-	echo "Enable Nginx error log"
-	echo "" > /var/log/nginx/error.log
-	tail -f /var/log/nginx/error.log &
+	echo "[INFO] Enable Nginx error log"
+	echo "" > /var/log/nginx/tmall.error.log
+	tail -f /var/log/nginx/tmall.error.log &
 fi
 
 # Select HTTP mode
@@ -170,9 +183,7 @@ if [[ "${SSL}" == "true" ]]; then
 else
 	cp /bootstrap/config/nginx/http.conf /etc/nginx/conf.d/default.conf
 fi
-
-echo "Clearing any old processes..."
+echo "[INFO] Clearing any old processes..."
 rm -f /run/nginx/nginx.pid
-
-echo "Starting Nginx..."
+echo "[INFO] Starting Nginx..."
 nginx -g "daemon off;"
