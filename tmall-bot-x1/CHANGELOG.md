@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.5] - 2018-2-3
+- 修复当 client 修改时，数据库内容不更新情况。
+- 添加 SSL 证书路径选项。
+
 ## [0.0.4] - 2018-1-30
 - 更换 web 服务器为 nginx。
 - 增加 HTTP2 支持。
