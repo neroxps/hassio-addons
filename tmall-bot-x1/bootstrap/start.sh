@@ -23,7 +23,6 @@ CONTAINER_TIMEZONE="$(jq -r ".container_timezone" $OPTIONS)"
 CONFIG_DIR="/config/tmall-bot-x1"
 HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
-SSL="$(jq -r ".ssl" $OPTIONS)"
 
 
 # Set the timezone. Base image does not contain the setup-timezone script, so an alternate way is used.
@@ -175,10 +174,17 @@ if [[ "${HTTPD_ERROR_LOG}" == "true" ]]; then
 fi
 
 # Select HTTP mode
+SSL="$(jq -r ".ssl" $OPTIONS)"
+SSL_TRUSTED_CERTIFICATE="$(jq -r ".ssl_trusted_certificate" $OPTIONS)"
+SSL_CERTIFICATE="$(jq -r ".ssl_certificate" $OPTIONS)"
+SSL_KEY="$(jq -r ".ssl_key" $OPTIONS)"
 if [[ "${SSL}" == "true" ]]; then
     if [ ! -e /data/dhparam.pem ]; then
         openssl dhparam -dsaparam -out /data/dhparam.pem 4096
     fi
+    sed -i "s#%%{SSL_TRUSTED_CERTIFICATE}%%#${SSL_TRUSTED_CERTIFICATE}#" /bootstrap/config/nginx/https.conf
+    sed -i "s#%%{SSL_CERTIFICATE}%%#${SSL_CERTIFICATE}#" /bootstrap/config/nginx/https.conf
+    sed -i "s#%%{SSL_KEY}%%#${SSL_KEY}#" /bootstrap/config/nginx/https.conf
 	cp /bootstrap/config/nginx/https.conf /etc/nginx/conf.d/default.conf
 else
 	cp /bootstrap/config/nginx/http.conf /etc/nginx/conf.d/default.conf

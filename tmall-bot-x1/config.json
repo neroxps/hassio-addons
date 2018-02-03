@@ -1,6 +1,6 @@
 {
     "name": "Tmall Bot X1 Bridge", 
-    "version": "0.0.4", 
+    "version": "0.0.5", 
     "slug": "tmall-bot-x1", 
     "description": "天猫精灵X1 接入网关", 
     "url": "https://github.com/neroxps/hassio-addons/tree/master/tmall-bot-x1", 
@@ -18,15 +18,20 @@
     "options": {
         "local_mysql":true,
         "ssl":true,
+        "ssl_trusted_certificate":"/ssl/tmall/chain.pem",
+        "ssl_certificate":"/ssl/tmall/fullchain.pem",
+        "ssl_key":"/ssl/tmall/privkey.pem",
         "client_id": "qwertyuiopasdfghjkl", 
         "client_secret": "zxcvbnmasdfghjkl", 
         "discovery": true, 
-        "httpd_log": true, 
         "httpd_error_log": true
     }, 
     "schema": {
         "local_mysql":"bool?",
         "ssl":"bool?",
+        "ssl_trusted_certificate":"str",
+        "ssl_certificate":"str",
+        "ssl_key":"str",
         "remote_proxy":"bool?",
         "mysql_host": "str?", 
         "mysql_db_name": "str?", 
