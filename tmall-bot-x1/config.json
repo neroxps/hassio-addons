@@ -17,10 +17,13 @@
     ], 
     "options": {
         "local_mysql":true,
-        "ssl":true,
-        "ssl_trusted_certificate":"/ssl/tmall/chain.pem",
-        "ssl_certificate":"/ssl/tmall/fullchain.pem",
-        "ssl_key":"/ssl/tmall/privkey.pem",
+        "ssl":[
+            {
+                "ssl_trusted_certificate":"/ssl/tmall/chain.pem",
+                "ssl_certificate":"/ssl/tmall/fullchain.pem",
+                "ssl_key":"/ssl/tmall/privkey.pem"
+            }
+        ],
         "client_id": "qwertyuiopasdfghjkl", 
         "client_secret": "zxcvbnmasdfghjkl", 
         "device_user":"admin",
@@ -30,10 +33,7 @@
     }, 
     "schema": {
         "local_mysql":"bool?",
-        "ssl":"bool?",
-        "ssl_trusted_certificate":"str?",
-        "ssl_certificate":"str?",
-        "ssl_key":"str?",
+        "ssl":["str?"],
         "mysql_host": "str?", 
         "mysql_db_name": "str?", 
         "mysql_user": "str?", 

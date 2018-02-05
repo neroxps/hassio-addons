@@ -188,12 +188,18 @@ if [[ "${HTTPD_ERROR_LOG}" == "true" ]]; then
 fi
 
 # Select HTTP mode
-SSL="$(jq -r ".ssl" $OPTIONS)"
-SSL_TRUSTED_CERTIFICATE="$(jq -r ".ssl_trusted_certificate" $OPTIONS)"
-SSL_CERTIFICATE="$(jq -r ".ssl_certificate" $OPTIONS)"
-SSL_KEY="$(jq -r ".ssl_key" $OPTIONS)"
-if [[ "${SSL}" == "true" ]]; then
-    if [ ! -e /data/dhparam.pem ]; then
+SSL_ARRAY=$(jq -r ".ssl | length " ${OPTIONS})
+if [[ ${SSL_ARRAY} -eq 1 ]]; then
+	SSL_TRUSTED_CERTIFICATE="$(jq -r ".ssl[0].ssl_trusted_certificate" ${OPTIONS})"
+	SSL_CERTIFICATE="$(jq -r ".ssl[0].ssl_certificate" ${OPTIONS})"
+	SSL_KEY="$(jq -r ".ssl[0].ssl_key" ${OPTIONS})"
+	if [[ "${SSL_TRUSTED_CERTIFICATE}" == "null" ]] || [[ "${SSL_CERTIFICATE}" == "null" ]] || [[ "${SSL_KEY}" == "null" ]] ; then
+		echo "[ERROR] SSL configuration error, check options."
+		echo "SSL_TRUSTED_CERTIFICATE = $SSL_TRUSTED_CERTIFICATE"
+	    echo "SSL_CERTIFICATE = $SSL_CERTIFICATE"
+	    echo "SSL_KEY = $SSL_KEY"
+		exit 1
+    elif [ ! -e /data/dhparam.pem ]; then
         openssl dhparam -dsaparam -out /data/dhparam.pem 4096
     fi
     sed -i "s#%%{SSL_TRUSTED_CERTIFICATE}%%#${SSL_TRUSTED_CERTIFICATE}#" /bootstrap/config/nginx/https.conf
