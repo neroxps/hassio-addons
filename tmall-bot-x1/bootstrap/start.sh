@@ -161,6 +161,15 @@ elif [[ "${DISCOVERY}" == "false" ]] && [[ -d "${CONFIG_DIR}/device" ]]; then
 fi
 php-fpm
 
+# Set access control
+DEVICE_USER="$(jq -r ".device_user" $OPTIONS)"
+DEVICE_PASSWD="$(jq -r ".device_passwd" $OPTIONS)"
+if [[ "DEVICE_USER" == "null" ]] || [[ "DEVICE_PASSWD" == "null" ]] ; then
+	echo "[ERROR] device_user and device_passwd can not be empty"
+else
+	htpasswd -b -c /etc/nginx/auth_conf ${DEVICE_USER} ${DEVICE_PASSWD}
+fi
+
 # Nginx Log
 if [[ "${HTTPD_LOG}" == "true" ]]; then
 	echo "[INFO] Enable Nginx log"
