@@ -153,6 +153,11 @@ if [[ ! -d "${CONFIG_DIR}" ]]; then
 	echo "[INFO] Done"
 fi
 
+PHP_HA_PASSWD="$(grep -e "PASS=\".*\";" ${CONFIG_DIR}/homeassistant_conf.php |awk -F '"' '{print $2}')"
+if [[ "${PHP_HA_PASSWD}" != "${HA_PASSWD}" ]]; then
+	sed -i "s#${PHP_HA_PASSWD}#${HA_PASSWD}#" ${CONFIG_DIR}/homeassistant_conf.php
+fi
+
 # run php-fpm
 if [[ "${DISCOVERY}" == "true" ]] && [[ ! -d "${CONFIG_DIR}/device" ]] ; then
 	cp -R /bootstrap/tmall-bot-x1/device ${CONFIG_DIR}
