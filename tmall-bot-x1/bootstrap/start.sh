@@ -155,7 +155,7 @@ fi
 
 # run php-fpm
 if [[ "${DISCOVERY}" == "true" ]] && [[ ! -d "${CONFIG_DIR}/device" ]] ; then
-	cp /bootstrap/tmall-bot-x1/device ${CONFIG_DIR}
+	cp -R /bootstrap/tmall-bot-x1/device ${CONFIG_DIR}
 elif [[ "${DISCOVERY}" == "false" ]] && [[ -d "${CONFIG_DIR}/device" ]]; then
 	rm -rf "${CONFIG_DIR}/device"
 fi
