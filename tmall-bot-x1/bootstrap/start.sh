@@ -189,10 +189,10 @@ fi
 
 # Select HTTP mode
 SSL_ARRAY=$(jq -r ".ssl | length " ${OPTIONS})
-if [[ ${SSL_ARRAY} -eq 1 ]]; then
-	SSL_TRUSTED_CERTIFICATE="$(jq -r ".ssl[0].ssl_trusted_certificate" ${OPTIONS})"
-	SSL_CERTIFICATE="$(jq -r ".ssl[0].ssl_certificate" ${OPTIONS})"
-	SSL_KEY="$(jq -r ".ssl[0].ssl_key" ${OPTIONS})"
+if [[ ${SSL_ARRAY} -eq 3 ]]; then
+	SSL_TRUSTED_CERTIFICATE="$(jq -r ".ssl.ssl_trusted_certificate" ${OPTIONS})"
+	SSL_CERTIFICATE="$(jq -r ".ssl.ssl_certificate" ${OPTIONS})"
+	SSL_KEY="$(jq -r ".ssl.ssl_key" ${OPTIONS})"
 	if [[ "${SSL_TRUSTED_CERTIFICATE}" == "null" ]] || [[ "${SSL_CERTIFICATE}" == "null" ]] || [[ "${SSL_KEY}" == "null" ]] ; then
 		echo "[ERROR] SSL configuration error, check options."
 		echo "SSL_TRUSTED_CERTIFICATE = $SSL_TRUSTED_CERTIFICATE"
