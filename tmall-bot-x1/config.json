@@ -33,7 +33,13 @@
     }, 
     "schema": {
         "local_mysql":"bool?",
-        "ssl":["str?"],
+        "ssl":[
+            {
+                "ssl_trusted_certificate":"str?",
+                "ssl_certificate":"str?",
+                "ssl_key":"str?"
+            }
+        ],
         "mysql_host": "str?", 
         "mysql_db_name": "str?", 
         "mysql_user": "str?", 
