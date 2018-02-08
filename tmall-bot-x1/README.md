@@ -10,6 +10,7 @@
  * [c1pher-cn](https://github.com/c1pher-cn)/[tmall-bot-x1](https://github.com/c1pher-cn/tmall-bot-x1)
  * [bshaffer](https://github.com/bshaffer)/[oauth2-server-php](https://github.com/bshaffer/oauth2-server-php)
  * [SAE搭建天猫精灵接入HA后台，新增设备管理系统](https://bbs.hassbian.com/thread-2285-1-1.html) 
+ * [czweb](https://bbs.hassbian.com/home.php?mod=space&uid=2904) 提供基于[SAE搭建天猫精灵接入HA后台，新增设备管理系统](https://bbs.hassbian.com/thread-2285-1-1.html)修改的php程序
 
 ## 使用方法
 
