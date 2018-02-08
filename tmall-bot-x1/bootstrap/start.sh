@@ -5,11 +5,11 @@ if [[ "$(jq -r ".debug" $OPTIONS)" == "true" ]]; then
 fi
 HA_URL="http://hassio/homeassistant"
 HA_PASSWD="${HASSIO_TOKEN}"
-MYSQL_HOST="$(jq -r ".mysql_host" $OPTIONS)"
-MYSQL_DB_NAME="$(jq -r ".mysql_db_name" $OPTIONS)"
-MYSQL_USER="$(jq -r ".mysql_user" $OPTIONS)"
-MYSQL_PASSWD="$(jq -r ".mysql_passwd" $OPTIONS)"
-MYSQL_PORT="$(jq -r ".mysql_port" $OPTIONS)"
+MYSQL_HOST="$(jq -r ".remote_database.mysql_host" $OPTIONS)"
+MYSQL_DB_NAME="$(jq -r ".remote_database.mysql_db_name" $OPTIONS)"
+MYSQL_USER="$(jq -r ".remote_database.mysql_user" $OPTIONS)"
+MYSQL_PASSWD="$(jq -r ".remote_database.mysql_passwd" $OPTIONS)"
+MYSQL_PORT="$(jq -r ".remote_database.mysql_port" $OPTIONS)"
 if [[ ${MYSQL_PORT} == "null" ]]; then 
 	MYSQL_PORT="3306"
 	MYSQL_FULL_HOST="${MYSQL_HOST}"
@@ -18,9 +18,7 @@ else
 fi
 CLIENT_ID="$(jq -r ".client_id" $OPTIONS)"
 CLIENT_SECRET="$(jq -r ".client_secret" $OPTIONS)"
-DISCOVERY="$(jq -r ".discovery" $OPTIONS)"
 CONTAINER_TIMEZONE="$(jq -r ".container_timezone" $OPTIONS)"
-CONFIG_DIR="/config/tmall-bot-x1"
 HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
 
@@ -38,8 +36,9 @@ fi
 
 
 # Set local databases
-LOCAL_MYSQL="$(jq -r ".local_mysql" $OPTIONS)"
-if [[ "${LOCAL_MYSQL}" == "true" ]]; then
+LOCAL_MYSQL=$(jq -r ".remote_database | length " ${OPTIONS})
+if [[ ${LOCAL_MYSQL} -eq 0 ]]; then
+	echo "[INFO] No remote database found. Will use the local database."
 	MYSQL_HOST="localhost"
 	MYSQL_DB_NAME="tmall"
 	MYSQL_USER="tmall"
@@ -86,6 +85,18 @@ if [[ "${LOCAL_MYSQL}" == "true" ]]; then
 	    mysqladmin shutdown
 	}
 	trap "stop_mariadb" SIGTERM SIGHUP
+else
+	REMOTE_DATABASE_VALUE=(${MYSQL_HOST} ${MYSQL_DB_NAME} ${MYSQL_USER} ${MYSQL_PASSWD})
+	REMOTE_DATABASE=("MYSQL_HOST" "MYSQL_DB_NAME" "MYSQL_USER" "MYSQL_PASSWD")
+	VALUE_NUM=${#REMOTE_DATABASE_VALUE[@]}
+	while [[ ${VALUE_NUM} -ge 0 ]]; do
+		let VALUE_NUM--
+		if [[ "${REMOTE_DATABASE_VALUE[${VALUE_NUM}]}" == "null" ]]; then
+			echo "[ERROR] ${REMOTE_DATABASE[${VALUE_NUM}]} can not be empty!"
+			exit 1
+		fi
+	done
+	echo "[INFO] Found remote database: ${MYSQL_HOST}"
 fi
 
 # Tmall databases initialization
@@ -128,52 +139,52 @@ else
 			WHERE client_id=\"${DB_CLIENT_ID}\" AND client_secret=\"${DB_CLIENT_SECRET}\"
 		"
 	fi
-	$MYSQL_DB_TMALL -e "
+	${MYSQL_DB_TMALL} -e "
 	show tables;
 	select * from oauth_clients order by redirect_uri"
 fi
 echo "----------------------------------------------------------------"
 
 # Tmall Bot Install
+CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
+if [[ "${CONFIG_DIR_TO_CONFIG}" == "true" ]]; then
+	CONFIG_DIR="/config/tmall-bot-x1"
+else
+	CONFIG_DIR="/data/tmall-bot-x1"
+fi
 if [[ ! -d "${CONFIG_DIR}" ]]; then
-	echo "[INFO] Tmall Bot Bridge install to the config"
-	cp -R /bootstrap/tmall-bot-x1 ${CONFIG_DIR:0:8}
+	echo "[INFO] Tmall Bot Bridge install to the ${CONFIG_DIR}"
+	cp -R /bootstrap/tmall-bot-x1 ${CONFIG_DIR%/*}
 	rm -f "${CONFIG_DIR}/tmallx1.sql"
-	sed -i "s#%%{HOMEASSISTANT_URL}%%#${HA_URL}#" ${CONFIG_DIR}/homeassistant_conf.php
-	sed -i "s#%%{YOURHOMEASSITANTPASSWORD}%%#${HA_PASSWD}#" ${CONFIG_DIR}/homeassistant_conf.php
-	sed -i "s#%%{YOURHOMEASSITANTPASSWORD}%%#${HA_PASSWD}#" ${CONFIG_DIR}/homeassistant_conf.php
-	sed -i "s#%%{MYSQL_DB_NAME}%%#${MYSQL_DB_NAME}#" ${CONFIG_DIR}/server.php
-	sed -i "s#%%{MYSQL_HOST}%%#${MYSQL_FULL_HOST}#" ${CONFIG_DIR}/server.php
-	sed -i "s#%%{MYSQL_USER}%%#${MYSQL_USER}#" ${CONFIG_DIR}/server.php
-	sed -i "s#%%{MYSQL_PASSWD}%%#${MYSQL_PASSWD}#" ${CONFIG_DIR}/server.php
-	sed -i "s#%%{MYSQL_DB_NAME}%%#${MYSQL_DB_NAME}#" ${CONFIG_DIR}/device/service.php
-	sed -i "s#%%{MYSQL_HOST}%%#${MYSQL_FULL_HOST}#" ${CONFIG_DIR}/device/service.php
-	sed -i "s#%%{MYSQL_USER}%%#${MYSQL_USER}#" ${CONFIG_DIR}/device/service.php
-	sed -i "s#%%{MYSQL_PASSWD}%%#${MYSQL_PASSWD}#" ${CONFIG_DIR}/device/service.php
-	echo "[INFO] Done"
+	echo "[INFO] Tmall Bot Bridge installation completed!"
 fi
 
-PHP_HA_PASSWD="$(grep -e "PASS=\".*\";" ${CONFIG_DIR}/homeassistant_conf.php |awk -F '"' '{print $2}')"
-if [[ "${PHP_HA_PASSWD}" != "${HA_PASSWD}" ]]; then
-	sed -i "s#${PHP_HA_PASSWD}#${HA_PASSWD}#" ${CONFIG_DIR}/homeassistant_conf.php
-fi
+# Update homeassistant_conf.php
+sed -i "s#const URL=.*#const URL=\"${HA_URL}\";#" ${CONFIG_DIR}/homeassistant_conf.php
+sed -i "s#const PASS=.*#const PASS=\"${HA_PASSWD}\";#" ${CONFIG_DIR}/homeassistant_conf.php
+sed -i "s#const dsn.*#const dsn ='mysql:dbname=${MYSQL_DB_NAME};host=${MYSQL_HOST}';#" ${CONFIG_DIR}/homeassistant_conf.php
+sed -i "s#const user.*#const user='${MYSQL_USER}';#" ${CONFIG_DIR}/homeassistant_conf.php
+sed -i "s#const pwd.*#const pwd ='${MYSQL_PASSWD}';#" ${CONFIG_DIR}/homeassistant_conf.php
+echo "[INFO] Update homeassistant_conf.php completed!"
+sed -n "/const/p" ${CONFIG_DIR}/homeassistant_conf.php
 
 # run php-fpm
-if [[ "${DISCOVERY}" == "true" ]] && [[ ! -d "${CONFIG_DIR}/device" ]] ; then
-	cp -R /bootstrap/tmall-bot-x1/device ${CONFIG_DIR}
-elif [[ "${DISCOVERY}" == "false" ]] && [[ -d "${CONFIG_DIR}/device" ]]; then
-	rm -rf "${CONFIG_DIR}/device"
-fi
 php-fpm
 
 # Set access control
 DEVICE_USER="$(jq -r ".device_user" $OPTIONS)"
 DEVICE_PASSWD="$(jq -r ".device_passwd" $OPTIONS)"
-if [[ "DEVICE_USER" == "null" ]] || [[ "DEVICE_PASSWD" == "null" ]] ; then
-	echo "[ERROR] device_user and device_passwd can not be empty"
+if [[ "${DEVICE_USER}" == "null" ]] || [[ "${DEVICE_USER}" == "null" ]] ; then
+	echo "[INFO] DEVICE_USER and DEVICE_PASSWD settings not found, the system automatically generates a password."
+	DEVICE_USER="admin"
+	DEVICE_PASSWD="$(tr -cd '[:alnum:]' < /dev/urandom | fold -w30 | head -n1)"
+	htpasswd -b -c /etc/nginx/auth_conf ${DEVICE_USER} ${DEVICE_PASSWD}
 else
 	htpasswd -b -c /etc/nginx/auth_conf ${DEVICE_USER} ${DEVICE_PASSWD}
 fi
+echo "Device Remote Access:"
+echo "USERNAME:${DEVICE_USER}"
+echo "PASSWORD:${DEVICE_PASSWD}"
 
 # Nginx Log
 if [[ "${HTTPD_LOG}" == "true" ]]; then
@@ -187,9 +198,11 @@ if [[ "${HTTPD_ERROR_LOG}" == "true" ]]; then
 	tail -f /var/log/nginx/tmall.error.log &
 fi
 
-# Select HTTP mode
+# Select web mode
 SSL_ARRAY=$(jq -r ".ssl | length " ${OPTIONS})
+sed -i "s#%%{ROOT_DIR}%%#${CONFIG_DIR}#" /bootstrap/config/nginx/*.conf
 if [[ ${SSL_ARRAY} -eq 3 ]]; then
+	echo "[INFO] Enable Https mode"
 	SSL_TRUSTED_CERTIFICATE="$(jq -r ".ssl.ssl_trusted_certificate" ${OPTIONS})"
 	SSL_CERTIFICATE="$(jq -r ".ssl.ssl_certificate" ${OPTIONS})"
 	SSL_KEY="$(jq -r ".ssl.ssl_key" ${OPTIONS})"
@@ -207,6 +220,7 @@ if [[ ${SSL_ARRAY} -eq 3 ]]; then
     sed -i "s#%%{SSL_KEY}%%#${SSL_KEY}#" /bootstrap/config/nginx/https.conf
 	cp /bootstrap/config/nginx/https.conf /etc/nginx/conf.d/default.conf
 else
+	echo "[INFO] Enable Http mode"
 	cp /bootstrap/config/nginx/http.conf /etc/nginx/conf.d/default.conf
 fi
 echo "[INFO] Clearing any old processes..."

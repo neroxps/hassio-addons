@@ -1,13 +1,6 @@
 <?php
 require_once '../homeassistant_conf.php';
 
-$dsn = 'mysql:dbname=%%{MYSQL_DB_NAME}%%;host=%%{MYSQL_HOST}%%';
-$user = '%%{MYSQL_USER}%%';
-$pwd = '%%{MYSQL_PASSWD}%%';
-$db = new PDO($dsn, $user, $pwd);
-
-
-
 
 $v = isset($_GET['v']) ? $_GET['v'] : "v";
 if ($v=="v"){
@@ -60,14 +53,10 @@ if ($v=="v"){
     //echo "{\"deviceName\" : \"$deviceName\",\"deviceId\":\"$deviceId\",\"jsonData\":\"$count\"}";
 }
 elseif ($v=="del"){
-    
     $deviceId=$_REQUEST['deviceId'];
-    
     $rs = $db->exec("DELETE FROM oauth_devices WHERE deviceId='$deviceId'");
     
-    
     if($rs==1){
-
         $rs = $db->query("SELECT* FROM oauth_devices WHERE del!='1'");
 		$data=array();
 		while($row = $rs->fetch()){
@@ -80,30 +69,20 @@ elseif ($v=="del"){
     		"Msg"=>"删除成功！",
     		"data"=>$data
 		);
-
-	    
-    
     }else{
         $a=array(
-		"code"=>"err",
-    	"Msg"=>"删除失败！"
-	);
-    
+            "code"=>"err",
+            "Msg"=>"删除失败！"
+        );
     }
-    
-	
-
 	echo json_encode($a);
     //echo "{\"deviceName\" : \"$deviceName\",\"deviceId\":\"$deviceId\",\"jsonData\":\"$count\"}";
 }
 
 
 elseif ($v=="getNotice"){//到我的服务器获取版本更新完善的消息，不会收集信息请放心使用！
-
-
-    $url = "http://qebapp.applinzi.com/device/notice.php?version=3";
-	getdata($url);
-
+    //$url = "http://qebapp.applinzi.com/device/notice.php?version=3";
+	//getdata($url);
 }
 elseif ($v=="getDevice1"){
     $url = URL."/api/states?api_password=".PASS;
@@ -123,20 +102,17 @@ elseif ($v=="getDevice1"){
             array_push($deviveList[$deviceType],$arr[$i]);    
         }   
     }
-$ret=array();
+    $ret=array();
 
-for($i=0;$i<count($deviceTypeList);++$i){
-    array_push($ret,array(
-        			"deviceType"=>$deviceTypeList[$i],
-        			"deviveList"=>$deviveList[$deviceTypeList[$i]]
-    ));
-   
-}
-
+    for($i=0;$i<count($deviceTypeList);++$i){
+        array_push($ret,array(
+            			"deviceType"=>$deviceTypeList[$i],
+            			"deviveList"=>$deviveList[$deviceTypeList[$i]]
+        ));
+    }
 	echo json_encode($ret);
-    
-
 }
+
 elseif ($v=="getDevice"){
     $url = URL."/api/states?api_password=".PASS;
 	$data = getdata1($url);
@@ -145,16 +121,15 @@ elseif ($v=="getDevice"){
 	$deviveList=array();
 
 	for($i=0;$i<$num;++$i){ 
-
         $deviceType = explode('.',$arr[$i]->entity_id)[0];
 
-        	$title=$arr[$i]->attributes->friendly_name;
-            $value=$arr[$i]->entity_id;
+    	$title=$arr[$i]->attributes->friendly_name;
+        $value=$arr[$i]->entity_id;
 
-        	array_push($deviveList,array(
-            						"title"=>$title,
-                					"value"=>$value
-            ));
+    	array_push($deviveList,array(
+        						"title"=>$title,
+            					"value"=>$value
+        ));
  
     }
 

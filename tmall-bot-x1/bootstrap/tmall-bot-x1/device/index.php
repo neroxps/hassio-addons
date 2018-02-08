@@ -2,16 +2,13 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>天猫精灵设备管理</title>
+<title>天猫精灵设备管理1.1</title>
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
   <link rel="stylesheet" href="weui/style/weuix.min.css"/>
   
   <!--
     <link rel="icon" href="weui/favicon.ico">
-
-
-      
--->
+  -->
       <script src="weui/zepto.min.js"></script>
       <script src="weui/vue.js"></script>
       <script src="weui/vue-resource.js"></script>
@@ -157,7 +154,7 @@ var vm = new Vue({
   el: '#app',
   data: {
       notice:{
-      	title:'天猫精灵设备管理_1.0   By qebabe',
+      	title:'天猫精灵设备管理_1.1   By cz',
         nocice:"",
         
       },

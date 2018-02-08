@@ -6,16 +6,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.0] - 2018-2-8
+### Added
+- 将 tmall-bot-x1 代码替换为 czweb 修改的代码。
+- 添加 device 页面密码验证功能
+
+### Fixed
+- 优化 options 选项，简化默认选项。
+
 ## [0.0.5] - 2018-2-3
-- 修复当 client 修改时，数据库内容不更新情况。
+### Added
 - 添加 SSL 证书路径选项。
 
+### Fixed
+- 修复当 client 修改时，数据库内容不更新情况。
+
+
 ## [0.0.4] - 2018-1-30
+### Added
 - 更换 web 服务器为 nginx。
 - 增加 HTTP2 支持。
 - 增加 HTTPS 支持，请将证书放置到 ssl/tmall 目录。（chain.pem|fullchain.pem|privkey.pem）
 
 ## [0.0.3] - 2018-1-30
+### Added
 - 增加其他 hassio 支持平台适配。
 
 ## [0.0.2] - 2018-1-29
