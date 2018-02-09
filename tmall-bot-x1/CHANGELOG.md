@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.1] - 2018-2-9
+### Fixed
+- 修复 device 页面密码验证时点击取消后页面依然加载的bug。
+
 ## [0.1.0] - 2018-2-8
 ### Added
 - 将 tmall-bot-x1 代码替换为 czweb 修改的代码。

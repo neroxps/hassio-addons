@@ -2,6 +2,8 @@
 
 利用 [tmall-bot-x1](https://github.com/c1pher-cn/tmall-bot-x1) 项目及 [https://bbs.hassbian.com/thread-2285-1-1.html](https://bbs.hassbian.com/thread-2285-1-1.html) 制作而成的天猫精灵接入网关。
 
+**框架：** PHP7+Nginx+Mariadb
+
 ## 鸣谢
 
 本插件完全基于以下各位大神的代码构建而成，我只是一名搬运工。（排名不分先后）
