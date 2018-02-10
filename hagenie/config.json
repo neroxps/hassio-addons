@@ -1,0 +1,16 @@
+{
+    "name": "Hagenie", 
+    "version": "0.0.1", 
+    "slug": "hagenie", 
+    "description": "天猫精灵X1 接入网关-Hagenie", 
+    "startup": "application", 
+    "boot": "auto", 
+    "homeassistant_api": true, 
+    "ports": {
+        "8122/tcp": 8122
+    }, 
+    "map": [], 
+    "options": {}, 
+    "schema": {},
+    "image": "neroxps/{arch}-hagenie-addon"
+}
