@@ -156,8 +156,8 @@ echo "----------------------------------------------------------------"
 COLUMN_NAME="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ='tmallx1' and table_name = 'oauth_devices' and COLUMN_NAME = 'devices'")"
 if [[ "${COLUMN_NAME}" == "" ]]; then
 		${MYSQL_DB_TMALL} -e "
-		ALTER TABLE  `oauth_devices` ADD  `devices` TEXT NOT NULL AFTER  `jsonData`;
-		ALTER TABLE `oauth_devices` ADD `virtual` INT NOT NULL DEFAULT '0' AFTER `jsonData`;"
+		ALTER TABLE  \`oauth_devices\` ADD  \`devices\` TEXT NOT NULL AFTER  \`jsonData\`
+		ALTER TABLE \`oauth_devices\` ADD \`virtual\` INT NOT NULL DEFAULT '0' AFTER \`jsonData\`"
 		rm -rf "${CONFIG_DIR}"
 fi
 
