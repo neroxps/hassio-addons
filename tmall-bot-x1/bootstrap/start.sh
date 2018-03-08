@@ -21,6 +21,12 @@ CLIENT_SECRET="$(jq -r ".client_secret" $OPTIONS)"
 CONTAINER_TIMEZONE="$(jq -r ".container_timezone" $OPTIONS)"
 HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
+CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
+if [[ "${CONFIG_DIR_TO_CONFIG}" == "true" ]]; then
+	CONFIG_DIR="/config/tmall-bot-x1"
+else
+	CONFIG_DIR="/data/tmall-bot-x1"
+fi
 
 
 # Set the timezone. Base image does not contain the setup-timezone script, so an alternate way is used.
@@ -152,15 +158,10 @@ if [[ "${COLUMN_NAME}" == "" ]]; then
 		${MYSQL_DB_TMALL} -e "
 		ALTER TABLE  `oauth_devices` ADD  `devices` TEXT NOT NULL AFTER  `jsonData`;
 		ALTER TABLE `oauth_devices` ADD `virtual` INT NOT NULL DEFAULT '0' AFTER `jsonData`;"
+		rm -rf "${CONFIG_DIR}"
 fi
 
 # Tmall Bot Install
-CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
-if [[ "${CONFIG_DIR_TO_CONFIG}" == "true" ]]; then
-	CONFIG_DIR="/config/tmall-bot-x1"
-else
-	CONFIG_DIR="/data/tmall-bot-x1"
-fi
 if [[ ! -d "${CONFIG_DIR}" ]]; then
 	echo "[INFO] Tmall Bot Bridge install to the ${CONFIG_DIR}"
 	cp -R /bootstrap/tmall-bot-x1 ${CONFIG_DIR%/*}
