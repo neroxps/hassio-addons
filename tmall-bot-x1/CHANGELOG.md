@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [0.1.1] - 2018-2-9
+### Added
+- 根据 qebabe 发布的[天猫精灵接入网关 4.0](https://bbs.hassbian.com/thread-2982-1-1.html) 更新，新增传感器支持。
+
+## [0.1.1] - 2018-2-9
 ### Fixed
 - 修复 device 页面密码验证时点击取消后页面依然加载的bug。
 

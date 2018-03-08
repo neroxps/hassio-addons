@@ -11,10 +11,18 @@ $poststr = file_get_contents("php://input");
 $obj = json_decode($poststr);
 $messageId = $uuid;
 
-test($poststr);
+
+/////////SAE 数据库配置，其他环境自行修改数据库连接信息
+$dsn = 'mysql:dbname='.SAE_MYSQL_DB.';host='.SAE_MYSQL_HOST_M;
+$user = SAE_MYSQL_USER;
+$pwd = SAE_MYSQL_PASS;
+///////
+
+
 
 
 $data=array();
+$db = new PDO($dsn, $user, $pwd);
 $rs = $db->query("SELECT* FROM oauth_devices  WHERE del!='1'");
 while($row = $rs->fetch()){
     array_push($data,json_decode($row['jsonData'], true));
@@ -25,10 +33,11 @@ $data = json_encode($data);
 
 switch($obj->header->namespace)
 {
-	case 'AliGenie.Iot.Device.Discovery':
+case 'AliGenie.Iot.Device.Discovery':
+
 
 	$str='{
-    header: 
+    header:
     {
         namespace: "AliGenie.Iot.Device.Discovery",
         name: "DiscoveryDevicesResponse",
@@ -39,9 +48,9 @@ switch($obj->header->namespace)
         devices: '.$data.'
         }
     }';
-  
 
 	$resultStr = sprintf($str,$messageId);
+
 	break;
 
 case 'AliGenie.Iot.Device.Control':
@@ -81,39 +90,11 @@ case 'AliGenie.Iot.Device.Control':
 		$resultStr = sprintf($str,$result->name,$messageId,$result->deviceId,$result->errorCode,$result->message);
 	}
 	break;
-        
  case 'AliGenie.Iot.Device.Query':
+
 	$result = Device_status($obj);
-        
-     test($result->name);
-     test($result->deviceId);
-     test($result->powerstate);
-     test($result->properties);
-    
-        
-        
-      if($result->powerstate=="on" or $result->powerstate=="off"){
-      $properties='{
-	   	              "name":"powerstate",
-	   	              "value":"%s"
-		           }';
-      }else{
-          $properties='{
-	   	              "name":"powerstate",
-	   	              "value":"on"
-		           		},
-                       {
-	   	              "name":"temperature",
-	   	              "value":"%s"
-		           },
-                   {"name":"humidity",
-                   "value":"30",
-                   }';
-      }
-        
-        
-    
-        
+
+    $properties = $result->powerstate;
 	if($result->result == "True" )
 	{
 		$str='{
@@ -126,14 +107,10 @@ case 'AliGenie.Iot.Device.Control':
 			   "payload":{
 			      "deviceId":"%s"
                            },
-			   "properties":[
-			       '.$properties.'
-                   
-                   ]
-
+			   "properties":'.$properties.'
 			}';
-		$resultStr = sprintf($str,$result->name,$messageId,$result->deviceId,$result->powerstate);
-        test($resultStr);
+		$resultStr = sprintf($str,$result->name,$messageId,$result->deviceId);
+
 
 	}
 	else
@@ -152,8 +129,6 @@ case 'AliGenie.Iot.Device.Control':
 			    }
 			}';
 		$resultStr = sprintf($str,$result->name,$messageId,$result->deviceId,$result->errorCode,$result->message);
-        
-        
 	}
 	break;
 default:
@@ -165,6 +140,9 @@ error_log($poststr);
 error_log('----reseponse---');
 error_log($resultStr);
 echo($resultStr);
+
+
+
 
 
 

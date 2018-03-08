@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__.'/homeassistant_conf.php';
+
+
+
+
 class AliGenie_Request
 {
 	protected $header = array(
@@ -22,7 +26,6 @@ class AliGenie_Response
 	protected $temp;
 	public function handleResponse()
         {
-				                
         }
 
 
@@ -43,7 +46,7 @@ class Response{
 	public $errorCode;
 	public $message;
 	public $powerstate;
-	public function put_query_response($result,$properties,$name,$deviceId,$errorCode,$message) { 
+	public function put_query_response($result,$properties,$name,$deviceId,$errorCode,$message) {
 		$this->result = $result;
 		$this->name = $name;
 		$this->deviceId = $deviceId;
@@ -64,7 +67,6 @@ class Response{
 		case "QueryTemperatureResponse":
 			if($properties!="")
 			{
-                
 				$this->properties=$properties;
 			}else
 			{
@@ -85,7 +87,7 @@ class Response{
 		    $this->errorCode = "DEVICE_NOT_SUPPORT_FUNCTION";
 			$this->message = "not support";
 			$this->result = FALSE;
-			break;	
+			break;
 		case "QueryHumidityResponse":
 			if($properties!="")
 			{
@@ -110,30 +112,29 @@ class Response{
 		        $this->errorCode = "DEVICE_NOT_SUPPORT_FUNCTION";
 			$this->message = "not support";
 			$this->result = FALSE;
-			break;	
+			break;
 		case "QueryChannelResponse":
 		        $this->errorCode = "DEVICE_NOT_SUPPORT_FUNCTION";
 			$this->message = "not support";
 			$this->result = FALSE;
-			break;	
+			break;
 		case "QueryModeResponse":
 		        $this->errorCode = "DEVICE_NOT_SUPPORT_FUNCTION";
 			$this->message = "not support";
 			$this->result = FALSE;
-			break;	
+			break;
 		default:
 		        $this->errorCode = "DEVICE_NOT_SUPPORT_FUNCTION";
 			$this->message = "not support";
 			$this->result = FALSE;
-			break;	
+			break;
 		}
 		//$this->result->result = $result;
 		//$this->result->name = $name;
 		//$this->result->deviceId = $deviceId;
 		//$this->result->errorCode = $errorCode;
 		//$this->result->message = $message;
-	} 
-		
+	}
 	public function put_control_response($result,$name,$deviceId,$errorCode,$message) { 
 		$this->result = $result;
 		$this->name = $name;
@@ -145,15 +146,18 @@ class Response{
 		//$this->result->deviceId = $deviceId;
 		//$this->result->errorCode = $errorCode;
 		//$this->result->message = $message;
-	} 
-	
+	}
+
 }
 function  Device_status($obj)
 {
 	$deviceId=$obj->payload->deviceId;
+
+
 	$action = '';
 	$device_ha = '';
 	$response_name = $obj->header->name.'Response';
+
 	switch(substr($deviceId,0,stripos($deviceId,".")))
 	{
 	case 'switch':
@@ -177,7 +181,6 @@ function  Device_status($obj)
 	case 'powerstate':
 	case 'color':
 	case 'QueryTemperature':
-            
 	case 'windspeed':
 	case 'brightness':
 	case 'fog':
@@ -190,7 +193,6 @@ function  Device_status($obj)
 	case 'anion':
 	case 'effluent':
 	case 'mode':
-	
 	default:
 		$action = 'states';
 	}
@@ -201,20 +203,77 @@ function  Device_status($obj)
 		 $response->put_query_response(False,"",$response_name,$deviceId,"not support","action or device not support,name:".$obj->header->name." device:".substr($deviceId,0,stripos($deviceId,".")));
 		 return $response;
      }
-	 
-	$query_response = file_get_contents(URL."/api/".$action."/".$deviceId."?api_password=".PASS);
-    $state = json_decode($query_response)->state; 	
-	error_log($state);
-	$response = new Response();
-    $response->put_query_response(True,$state,$response_name,$deviceId,"","");
-	return $response; 
 
-}	
+
+
+//链接数据库
+	// $dsn = 'mysql:dbname='.SAE_MYSQL_DB.';host='.SAE_MYSQL_HOST_M;
+	// $user = SAE_MYSQL_USER;
+	// $pwd = SAE_MYSQL_PASS;
+    //非SAE环境需要修改此处配置
+
+	$db = new PDO(dsn, user, pwd);
+    $rs = $db->query("SELECT* FROM oauth_devices WHERE deviceId='".$deviceId."'");
+
+
+
+
+    while($row = $rs->fetch()){
+    //echo $row['jsonData'];
+    $virtual = $row['virtual'];
+
+    //判断设备是否为虚拟设备
+    if ($virtual==1){
+        //当前设备为虚拟设备
+
+        $devices = $row['devices'];
+        //$devices = explode("|", $devices);
+        //print_r($devices);//取出该虚拟设备包含的子设备
+
+        $devices = str_replace(" ","",$devices);
+
+
+        $devices = json_decode($devices,true);
+        //echo $devices[0]['title'];
+        //print_r($devices);
+        $action = 'states';
+        $states=array(array('name'=>'powerstate','value'=>'on'));
+        foreach($devices as $item) {//遍历包含的子设备
+
+
+            $query_response = file_get_contents(URL."/api/".$action."/".$item['deviceId']."?api_password=".PASS);
+            $state = json_decode($query_response)->state;
+
+            $a = array ('name'=>$item['title'],'value'=>$state);
+            array_push($states,$a);
+
+        }
+
+    }
+    else{
+        //当前设备不是虚拟设备
+
+        $states=array();
+
+        $query_response = file_get_contents(URL."/api/".$action."/".$deviceId."?api_password=".PASS);
+        $state = json_decode($query_response)->state;
+        $states=array(array('name'=>'powerstate','value'=>$state));
+
+    }
+}
+    $properties = json_encode($states);
+
+	error_log($properties);
+	$response = new Response();
+    $response->put_query_response(True,$properties,$response_name,$deviceId,"","");
+	return $response;
+
+}
 function  Device_control($obj)
 {
         // result:
         //      result=true
-        //      name    
+        //      name
         //      deviceId
         //
         //      result=false
@@ -293,10 +352,14 @@ function  Device_control($obj)
 	error_log($http_post);
 	$pdt_response = file_get_contents($http_post, false, $context);
 	$response = new Response();
-	$response->put_control_response(True,$response_name,$deviceId,"","");	
+	$response->put_control_response(True,$response_name,$deviceId,"","");
 	return $response;
-	
 }
+
+
+
+
+
 
 
 ?>

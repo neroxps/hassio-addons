@@ -145,6 +145,15 @@ else
 fi
 echo "----------------------------------------------------------------"
 
+# Chack upgrade 4.0
+
+COLUMN_NAME="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ='tmallx1' and table_name = 'oauth_devices' and COLUMN_NAME = 'devices'")"
+if [[ "${COLUMN_NAME}" == "" ]]; then
+		${MYSQL_DB_TMALL} -e "
+		ALTER TABLE  `oauth_devices` ADD  `devices` TEXT NOT NULL AFTER  `jsonData`;
+		ALTER TABLE `oauth_devices` ADD `virtual` INT NOT NULL DEFAULT '0' AFTER `jsonData`;"
+fi
+
 # Tmall Bot Install
 CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
 if [[ "${CONFIG_DIR_TO_CONFIG}" == "true" ]]; then

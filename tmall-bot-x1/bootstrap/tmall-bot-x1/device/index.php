@@ -2,13 +2,16 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>天猫精灵设备管理1.1</title>
+<title>天猫精灵设备管理</title>
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
   <link rel="stylesheet" href="weui/style/weuix.min.css"/>
   
   <!--
     <link rel="icon" href="weui/favicon.ico">
-  -->
+
+
+      
+-->
       <script src="weui/zepto.min.js"></script>
       <script src="weui/vue.js"></script>
       <script src="weui/vue-resource.js"></script>
@@ -83,15 +86,18 @@
                     <img v-bind:src="item.icon"  alt="">
                 </div>
                 <p class="weui_grid_label">
-                    {{ item.zone+"的"+item.deviceName+"_"+item.model }}
+                    {{ item.deviceName }}
                 </p>
+                <span class="weui-mark-rt bg-green">{{ item.zone }}</span>
+                
+                <div v-if="item.virtual==1" class="weui-mark-vip"><span class="weui-mark-lt bg-red">虚拟设备</span></div>
             </a>
             
             </template>
             
             
             
-            <a href="getDevice.php" class="weui_grid js_grid">
+            <a href="javascript:;" class="weui_grid js_grid" id="sd4">
                 <div class="weui_grid_icon">
                     <span class="icon icon-36" style="font-size: 60px;"></span>
                 </div>
@@ -140,7 +146,29 @@
     
    <script>
  
-       
+     $(document).on("click", "#sd4", function() {
+        $.modal({
+          title: "添加设备",
+          text: "选择你添加设备的种类：",
+          buttons: [
+            { text: "虚拟设备", onClick: function(){ 
+                
+                window.location.href='addVirtualDevice.php'; 
+            
+            
+            } },
+            { text: "真实设备", onClick: function(){ 
+                
+               window.location.href='getDevice.php'; 
+               
+            
+            
+            
+            } },
+            { text: "取消", className: "default"},
+          ]
+        });
+      });        
        
        
        
@@ -154,7 +182,7 @@ var vm = new Vue({
   el: '#app',
   data: {
       notice:{
-      	title:'天猫精灵设备管理_1.1   By cz',
+      	title:'天猫精灵设备管理_1.0   By qebabe',
         nocice:"",
         
       },
