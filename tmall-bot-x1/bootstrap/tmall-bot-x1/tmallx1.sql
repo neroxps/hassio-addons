@@ -105,6 +105,9 @@ CREATE TABLE `oauth_devices` (
   `deviceId` varchar(255) NOT NULL,
   `deviceName` varchar(255) NOT NULL,
   `jsonData` text NOT NULL,
+  `virtual` int(11) NOT NULL DEFAULT '0',
+  `devices` text NOT NULL,
+  `zone` varchar(255) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `del` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
