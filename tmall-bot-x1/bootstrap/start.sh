@@ -29,6 +29,7 @@ else
 fi
 
 
+
 # Set the timezone. Base image does not contain the setup-timezone script, so an alternate way is used.
 if [[ "${CONTAINER_TIMEZONE}" == "null" ]]; then
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
@@ -152,14 +153,25 @@ fi
 echo "----------------------------------------------------------------"
 
 # Chack upgrade 4.0
-
-COLUMN_NAME="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ='tmallx1' and table_name = 'oauth_devices' and COLUMN_NAME = 'devices'")"
-if [[ "${COLUMN_NAME}" == "" ]]; then
-		${MYSQL_DB_TMALL} -e "
-		ALTER TABLE  \`oauth_devices\` ADD  \`devices\` TEXT NOT NULL AFTER  \`jsonData\`;
-		ALTER TABLE \`oauth_devices\` ADD \`virtual\` INT NOT NULL DEFAULT "0" AFTER \`jsonData\`;
-		ALTER TABLE \`oauth_devices\` ADD \`zone\` VARCHAR( 255 ) NOT NULL AFTER \`devices\`"
+COLUMN_DEVICES="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ='tmallx1' and table_name = 'oauth_devices' and COLUMN_NAME = 'devices'")"
+COLUMN_VIRTUAL="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ='tmallx1' and table_name = 'oauth_devices' and COLUMN_NAME = 'virtual'")"
+COLUMN_ZONE="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ='tmallx1' and table_name = 'oauth_devices' and COLUMN_NAME = 'zone'")"
+function rm_config() {
+	if [[ -d "${CONFIG_DIR}" ]]; then
 		rm -rf "${CONFIG_DIR}"
+	fi
+}
+if [[ "${COLUMN_DEVICES}" == "" ]]; then
+	rm_config
+	${MYSQL_DB_TMALL} -e "ALTER TABLE  \`oauth_devices\` ADD  \`devices\` TEXT NOT NULL AFTER  \`jsonData\`"
+fi
+if [[ "${COLUMN_VIRTUAL}" == "" ]]; then
+	rm_config
+	${MYSQL_DB_TMALL} -e "ALTER TABLE \`oauth_devices\` ADD \`virtual\` INT NOT NULL DEFAULT "0" AFTER \`jsonData\`"
+fi
+if [[ "${COLUMN_ZONE}" == "" ]]; then
+	rm_config
+	${MYSQL_DB_TMALL} -e "ALTER TABLE \`oauth_devices\` ADD \`zone\` VARCHAR( 255 ) NOT NULL AFTER \`devices\`"
 fi
 
 # Tmall Bot Install
@@ -234,6 +246,8 @@ else
 	echo "[INFO] Enable Http mode"
 	cp /bootstrap/config/nginx/http.conf /etc/nginx/conf.d/default.conf
 fi
+
+#RUN
 echo "[INFO] Clearing any old processes..."
 rm -f /run/nginx/nginx.pid
 echo "[INFO] Starting Nginx..."
