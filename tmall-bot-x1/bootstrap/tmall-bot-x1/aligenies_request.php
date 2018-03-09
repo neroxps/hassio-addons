@@ -206,13 +206,7 @@ function  Device_status($obj)
 
 
 
-//链接数据库
-	// $dsn = 'mysql:dbname='.SAE_MYSQL_DB.';host='.SAE_MYSQL_HOST_M;
-	// $user = SAE_MYSQL_USER;
-	// $pwd = SAE_MYSQL_PASS;
-    //非SAE环境需要修改此处配置
-
-	$db = new PDO(dsn, user, pwd);
+//	$db = new PDO($dsn, $user, $pwd);
     $rs = $db->query("SELECT* FROM oauth_devices WHERE deviceId='".$deviceId."'");
 
 

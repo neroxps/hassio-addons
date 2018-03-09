@@ -1,10 +1,6 @@
 <?php
 require_once '../homeassistant_conf.php';
 
-// $dsn = 'mysql:dbname='.SAE_MYSQL_DB.';host='.SAE_MYSQL_HOST_M;
-// $user = SAE_MYSQL_USER;
-// $pwd = SAE_MYSQL_PASS;
-$db = new PDO(dsn, user, pwd);
 
 
 

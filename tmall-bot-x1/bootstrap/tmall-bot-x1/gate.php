@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/aligenies_request.php';
+require_once __DIR__.'/homeassistant_conf.php';
 $chars = md5(uniqid(mt_rand(), true));
 $uuid  = substr($chars,0,8) . '-';
 $uuid .= substr($chars,8,4) . '-';
@@ -12,17 +13,10 @@ $obj = json_decode($poststr);
 $messageId = $uuid;
 
 
-/////////SAE 数据库配置，其他环境自行修改数据库连接信息
-//$dsn = 'mysql:dbname='.SAE_MYSQL_DB.';host='.SAE_MYSQL_HOST_M;
-//$user = SAE_MYSQL_USER;
-//$pwd = SAE_MYSQL_PASS;
-///////
-
-
 
 
 $data=array();
-$db = new PDO(dsn, user, pwd);
+//$db = new PDO(dsn, user, pwd);
 $rs = $db->query("SELECT* FROM oauth_devices  WHERE del!='1'");
 while($row = $rs->fetch()){
     array_push($data,json_decode($row['jsonData'], true));

@@ -171,7 +171,7 @@ var vm = new Vue({
       deviceList:[],
       
       
-      canDevicelist:["switch","light"],
+      canDevicelist:["switch","light","sensor"],
       
 
   },

@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__.'/homeassistant_conf.php';
 
 // error reporting (this is a demo, after all!)
