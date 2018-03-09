@@ -206,7 +206,7 @@ function  Device_status($obj)
 
 
 
-//	$db = new PDO($dsn, $user, $pwd);
+	$db = new PDO(dsn, user, pwd);
     $rs = $db->query("SELECT* FROM oauth_devices WHERE deviceId='".$deviceId."'");
 
 
