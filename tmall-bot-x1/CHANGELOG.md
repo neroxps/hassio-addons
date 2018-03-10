@@ -5,8 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.2.2] ~ [0.2.7] - 2018-3-9
+### Fixed
+- 修正各种BUG。
+- 优化启动 shell 更新到4.0数据库代码。
 
-## [0.1.1] - 2018-2-9
+## [0.2.1] - 2018-3-9
 ### Added
 - 根据 qebabe 发布的[天猫精灵接入网关 4.0](https://bbs.hassbian.com/thread-2982-1-1.html) 更新，新增传感器支持。
 
