@@ -153,9 +153,9 @@ fi
 echo "----------------------------------------------------------------"
 
 # Chack upgrade 4.0
-COLUMN_DEVICES="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ="${MYSQL_DB_NAME}" and table_name = 'oauth_devices' and COLUMN_NAME = 'devices'")"
-COLUMN_VIRTUAL="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ="${MYSQL_DB_NAME}" and table_name = 'oauth_devices' and COLUMN_NAME = 'virtual'")"
-COLUMN_ZONE="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema ="${MYSQL_DB_NAME}" and table_name = 'oauth_devices' and COLUMN_NAME = 'zone'")"
+COLUMN_DEVICES="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema =\"${MYSQL_DB_NAME}\" and table_name = 'oauth_devices' and COLUMN_NAME = 'devices'")"
+COLUMN_VIRTUAL="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema =\"${MYSQL_DB_NAME}\" and table_name = 'oauth_devices' and COLUMN_NAME = 'virtual'")"
+COLUMN_ZONE="$(${MYSQL_DB_TMALL} -N -e "select  COLUMN_NAME from information_schema.columns where table_schema =\"${MYSQL_DB_NAME}\" and table_name = 'oauth_devices' and COLUMN_NAME = 'zone'")"
 function rm_config() {
 	if [[ -d "${CONFIG_DIR}" ]]; then
 		rm -rf "${CONFIG_DIR}"
