@@ -2,7 +2,7 @@
 OPTIONS="/data/options.json"
 
 # Chack Seafile dir
-if ! -d /share/seafile ; then
+if [ ! -d /share/seafile ] ; then
 	mkdir /share/seafile
 fi
 
