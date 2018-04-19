@@ -13,4 +13,4 @@ export SEAFILE_ADMIN_EMAIL=$(jq -r ".seafile_admin_email" $OPTIONS)
 export SEAFILE_ADMIN_PASSWORD=$(jq -r ".seafile_admin_password" $OPTIONS)
 
 # Run Seafile
-/scripts/start.py
+/sbin/my_init -- /scripts/start.py

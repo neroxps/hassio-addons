@@ -14,4 +14,4 @@ RUN apt update \
 
 EXPOSE 80/tcp 443/tcp
 
-CMD ["/sbin/my_init", "--", "/scripts/start.sh"]
+CMD ["/scripts/start.sh"]
