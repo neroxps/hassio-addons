@@ -6,7 +6,7 @@ Seafile 是一款开源的企业云盘，注重可靠性和性能。支持 Windo
 
 # 数据存放路径
 
-hassio 的 share/seafile 文件夹。
+hassio 的 `share/seafile` 文件夹。
 
 # 引用官方说明文档
 
