@@ -1,0 +1,30 @@
+{
+    "name": "Seafile", 
+    "version": "dev", 
+    "slug": "seafile", 
+    "description": "安全、可靠、快速的企业云盘", 
+    "url": "https://github.com/neroxps/hassio-addons/tree/master/seafile", 
+    "startup": "application", 
+    "boot": "auto",  
+    "ports": {
+        "80/tcp": 80,
+        "443/tcp":443
+    }, 
+    "map": [
+        "share:rw",
+        "ssl"
+    ], 
+    "options": {
+        "seafile_server_letsencrypt":false,
+        "seafile_server_hostname":"seafile.example.com",
+        "seafile_admin_email":"me@example.com",
+        "seafile_admin_password":"a_very_secret_password"
+    }, 
+    "schema": {
+        "seafile_server_letsencrypt":"bool?",
+        "seafile_server_hostname":"srt",
+        "seafile_admin_email":"email",
+        "seafile_admin_password":"srt"
+    },
+    "image": "neroxps/{arch}-seafile-addon"
+}

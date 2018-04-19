@@ -1,0 +1,7 @@
+{
+  "build_from": {
+    "amd64": "seafileltd/seafile:latest"
+  },
+  "squash": false,
+  "args": {}
+}
