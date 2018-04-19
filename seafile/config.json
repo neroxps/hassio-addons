@@ -22,9 +22,9 @@
     }, 
     "schema": {
         "seafile_server_letsencrypt":"bool?",
-        "seafile_server_hostname":"srt",
+        "seafile_server_hostname":"str",
         "seafile_admin_email":"email",
-        "seafile_admin_password":"srt"
+        "seafile_admin_password":"str"
     },
     "image": "neroxps/{arch}-seafile-addon"
 }
