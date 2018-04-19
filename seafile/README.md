@@ -4,6 +4,10 @@ Seafile 是一款开源的企业云盘，注重可靠性和性能。支持 Windo
 
 本项目基于 Seafile 官方的 docker 项目制作而成，具体参数及使用方法请参照官方项目 [seafile-docker](https://github.com/haiwen/seafile-docker)
 
+# 数据存放路径
+
+hassio 的 share/seafile 文件夹。
+
 # 引用官方说明文档
 
 [![Build Status](https://secure.travis-ci.org/haiwen/seafile-docker.png?branch=master)](http://travis-ci.org/haiwen/seafile-docker)
