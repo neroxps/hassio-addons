@@ -1,6 +1,6 @@
 {
   "build_from": {
-    "amd64": "seafileltd/seafile:latest"
+    "amd64": "seafileltd/seafile:6.2.5"
   },
   "squash": false,
   "args": {}

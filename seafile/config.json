@@ -1,6 +1,6 @@
 {
     "name": "Seafile", 
-    "version": "dev", 
+    "version": "6.2.5", 
     "slug": "seafile", 
     "description": "安全、可靠、快速的企业云盘", 
     "url": "https://github.com/neroxps/hassio-addons/tree/master/seafile", 
