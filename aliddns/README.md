@@ -12,6 +12,8 @@
 * redo(可选):单位秒，默认是600秒检测一次。
 * ipapi(可选):可填写自定义获取域名的url，例如:`http://myip.ipip.net`
 
+> 关于如何获取阿里云 Access key 请查看阿里云帮助文档[如何获取AccessKey ID和AccessKey Secret](https://help.aliyun.com/knowledge_detail/38738.html) 
+
 # Support list
 
 - amd64(测试通过)
