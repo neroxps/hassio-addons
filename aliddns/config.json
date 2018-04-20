@@ -1,6 +1,6 @@
 {
     "name": "aliddns", 
-    "version": "dev", 
+    "version": "0.1.0", 
     "slug": "aliddns", 
     "description": "ALiDDNS - Dynamic DNS CLI for [aliyun.com]", 
     "url": "https://github.com/neroxps/hassio-addons/tree/master/aliddns", 
