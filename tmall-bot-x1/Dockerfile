@@ -14,6 +14,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 	php7-json \
 	php7-pdo \
 	php7-pdo_mysql \
+	php7-session \
 	php7-curl \
 	mariadb-client \
 	mariadb \

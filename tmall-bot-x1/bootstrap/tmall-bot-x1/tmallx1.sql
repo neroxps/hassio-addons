@@ -1,6 +1,6 @@
--- MySQL dump 10.16  Distrib 10.1.28-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.22-MariaDB, for Linux (x86_64)
 --
--- Host: addon_core_mariadb    Database: tmallx1
+-- Host: localhost    Database: test_tmall
 -- ------------------------------------------------------
 -- Server version	10.1.22-MariaDB
 
@@ -102,14 +102,15 @@ DROP TABLE IF EXISTS `oauth_devices`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oauth_devices` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
   `deviceId` varchar(255) NOT NULL,
   `deviceName` varchar(255) NOT NULL,
   `jsonData` text NOT NULL,
-  `virtual` int(11) NOT NULL DEFAULT '0',
   `devices` text NOT NULL,
-  `zone` varchar(255) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `del` int(11) NOT NULL DEFAULT '0',
+  `virtual` int(11) NOT NULL DEFAULT '0',
+  `zone` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -196,6 +197,36 @@ LOCK TABLES `oauth_users` WRITE;
 /*!40000 ALTER TABLE `oauth_users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oauth_users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user_data`
+--
+
+DROP TABLE IF EXISTS `user_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_data` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `homeassistantURL` varchar(255) NOT NULL,
+  `homeassistantPASS` varchar(255) NOT NULL,
+  `user_name` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `fromwhere` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `inx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_data`
+--
+
+LOCK TABLES `user_data` WRITE;
+/*!40000 ALTER TABLE `user_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_data` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -206,4 +237,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-28 22:20:13
+-- Dump completed on 2018-06-02 14:18:34

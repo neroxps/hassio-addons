@@ -183,13 +183,16 @@ if [[ ! -d "${CONFIG_DIR}" ]]; then
 fi
 
 # Update homeassistant_conf.php
-sed -i "s#const URL=.*#const URL=\"${HA_URL}\";#" ${CONFIG_DIR}/homeassistant_conf.php
-sed -i "s#const PASS=.*#const PASS=\"${HA_PASSWD}\";#" ${CONFIG_DIR}/homeassistant_conf.php
-sed -i "s#const dsn.*#const dsn ='mysql:dbname=${MYSQL_DB_NAME};host=${MYSQL_HOST}';#" ${CONFIG_DIR}/homeassistant_conf.php
-sed -i "s#const user.*#const user='${MYSQL_USER}';#" ${CONFIG_DIR}/homeassistant_conf.php
-sed -i "s#const pwd.*#const pwd ='${MYSQL_PASSWD}';#" ${CONFIG_DIR}/homeassistant_conf.php
+#
+# The c1pher-cn version puts the URL and PASS in the database.
+# sed -i "s#const URL=.*#const URL=\"${HA_URL}\";#" ${CONFIG_DIR}/homeassistant_conf.php
+# sed -i "s#const PASS=.*#const PASS=\"${HA_PASSWD}\";#" ${CONFIG_DIR}/homeassistant_conf.php
+#
+sed -i "s#const DBNAME.*#const DBNAME=\"mysql:dbname=${MYSQL_DB_NAME};host=${MYSQL_HOST}\";#" ${CONFIG_DIR}/homeassistant_conf.php
+sed -i "s#const DBUSER.*#const DBUSER=\"${MYSQL_USER}\";#" ${CONFIG_DIR}/homeassistant_conf.php
+sed -i "s#const DBPASS.*#const DBPASS=\"${MYSQL_PASSWD}\";#" ${CONFIG_DIR}/homeassistant_conf.php
 echo "[INFO] Update homeassistant_conf.php completed!"
-sed -n "/const/p" ${CONFIG_DIR}/homeassistant_conf.php
+sed -n "/^const/p" ${CONFIG_DIR}/homeassistant_conf.php
 
 # run php-fpm
 php-fpm
