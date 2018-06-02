@@ -1,5 +1,7 @@
 <?php
 include_once( 'server.php' );
+session_start();
+
 if(empty($_SESSION)||empty($_SESSION['userinfo']))
 {
         $_SESSION['userurl'] = $_SERVER['REQUEST_URI'];
@@ -96,7 +98,7 @@ for($i=0;$i<$num;++$i){
 	}
 	if (strstr($arr[$i]->entity_id,"vacuum.")){
 		array_push($vacuum,$arr[$i]);
-		continue;			
+		continue;
 	}
 	if (strstr($arr[$i]->entity_id,"fan.")){
 		array_push($fan,$arr[$i]);
@@ -127,7 +129,7 @@ for($i=0;$i<$num;++$i){
 }
 $num = count($vacuum); 
 for($i=0;$i<$num;++$i){ 
-	  array_push($hadevice,array("entity_id" => $vacuum[$i]->entity_id,"friendly_name" => $vacuum[$i]->attributes->friendly_name));
+  array_push($hadevice,array("entity_id" => $vacuum[$i]->entity_id,"friendly_name" => $vacuum[$i]->attributes->friendly_name));
 }
 $num = count($sensor); 
 for($i=0;$i<$num;++$i){ 	
