@@ -1,0 +1,3 @@
+[submodule "tmall-bot-x1/bootstrap/tmall-bot-x1"]
+	path = tmall-bot-x1/bootstrap/tmall-bot-x1
+	url = git@github.com:neroxps/tmall-bot-x1.git
