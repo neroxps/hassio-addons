@@ -1,0 +1,16 @@
+sudo tee /etc/apt/sources.list <<-'EOF'
+
+deb http://mirrors.ustc.edu.cn/debian/ stretch main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian/ stretch-updates main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian-security/ stretch/updates main contrib non-free
+
+EOF
+apt update
+apt upgrade
+apt install -y build-essential vim git 
+
+
+
+/usr/bin/socat UNIX-LISTEN:/var/run/hassio-hc.sock,fork EXEC:/go/bin/run.sh
+
+echo "云喇叭快递，快递小管家，您的快递到了，请于下午6点前到学校后门申通快递取件" | socat - unix-connect:/var/run/hassio-hc.sock
