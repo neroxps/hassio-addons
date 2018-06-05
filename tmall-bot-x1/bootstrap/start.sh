@@ -136,6 +136,37 @@ if [[ "${TMALL_DB_TABLES}" == "" ]]; then
         select * from oauth_clients"
     echo "[INFO] Done"
 else
+    # Check user_data
+    if ! ${MYSQL_DB_TMALL} -e 'show tables' | grep user_data > /dev/null 2>&1 ;then
+        echo '[INFO] Table not found user_data'
+        printf '[INFO] Update database...............'
+        ${MYSQL_DB_TMALL} -e "
+            CREATE TABLE user_data (
+                id bigint NOT NULL AUTO_INCREMENT,
+                user_id VARCHAR(255) NOT NULL,
+                homeassistantURL VARCHAR(255) NOT NULL,
+                homeassistantPASS VARCHAR(255) NOT NULL,
+                user_name VARCHAR(255) NOT NULL,
+                email VARCHAR(255),
+                expires TIMESTAMP NOT NULL,
+                fromwhere VARCHAR(20) NOT NULL,
+                PRIMARY KEY (id),
+                UNIQUE inx_user_id (user_id)
+            );
+            INSERT INTO \`user_data\`
+            VALUES (1, 'user001', 'http://hassio/homeassistant', '${HASSIO_TOKEN}', '个人用户'
+                , 'email@email.com', '2018-06-02 14:44:00', 'c1pher-git')" >> /tmp/update.log 2>&1
+        if [[ $? -eq 0 ]];then
+            printf 'Done\n'
+        else
+            printf 'Error\n'
+            echo 'Please check the user_data table in the database'
+            $MYSQL -e "SHOW DATABASES"
+            cat /tmp/update.log
+            exit 1
+        fi
+    fi
+
     # Update client_id and client_secret
     RESULT="$(${MYSQL_DB_TMALL} -N -e "select * from oauth_clients")"
     DB_CLIENT_ID="$(echo "${RESULT}" | awk '{print $1}')"
