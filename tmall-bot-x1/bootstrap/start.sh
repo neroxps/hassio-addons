@@ -165,6 +165,8 @@ else
             cat /tmp/update.log
             exit 1
         fi
+        # update /config/tmall-bot-x1
+        mv /config/tmall-bot-x1 /config/tmall-bot-x1-backup
     fi
 
     # Update client_id and client_secret
