@@ -155,7 +155,10 @@ else
             );
             INSERT INTO \`user_data\`
             VALUES (1, 'user001', 'http://hassio/homeassistant', '${HASSIO_TOKEN}', '个人用户'
-                , 'email@email.com', '2018-06-02 14:44:00', 'c1pher-git')" >> /tmp/update.log 2>&1
+                , 'email@email.com', '2018-06-02 14:44:00', 'c1pher-git');
+			alter table oauth_devices add column user_id VARCHAR(255);
+			UPDATE oauth_devices SET user_id='user001';
+			UPDATE oauth_authorization_codes SET user_id='user001'" >> /tmp/update.log 2>&1
         if [[ $? -eq 0 ]];then
             printf 'Done\n'
         else
