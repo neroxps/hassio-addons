@@ -158,6 +158,8 @@ else
                 , 'email@email.com', '2018-06-02 14:44:00', 'c1pher-git');
 			alter table oauth_devices add column user_id VARCHAR(255);
 			UPDATE oauth_devices SET user_id='user001';
+            UPDATE oauth_access_tokens SET user_id='user001';
+            UPDATE oauth_refresh_tokens SET user_id='user001';
 			UPDATE oauth_authorization_codes SET user_id='user001'" >> /tmp/update.log 2>&1
         if [[ $? -eq 0 ]];then
             printf 'Done\n'
