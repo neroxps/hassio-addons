@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.5] - 2018-3-9
+### Fixed
+- 修复不能用天猫精灵控制的bug
+
 ## [0.3.0] ~ [0.3.4] - 2018-3-9
 ### Added 
 - 同步论坛 tmall-bot-x1 版本
