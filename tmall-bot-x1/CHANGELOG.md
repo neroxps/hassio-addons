@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.6] - 2018-3-9
+### Added
+- 同步自 [https://github.com/c1pher-cn/tmall-bot-x1](https://github.com/c1pher-cn/tmall-bot-x1)，新增频道切换功能。
+
 ## [0.3.5] - 2018-3-9
 ### Fixed
 - 修复不能用天猫精灵控制的bug
