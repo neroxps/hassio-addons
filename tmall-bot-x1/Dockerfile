@@ -19,6 +19,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 	mariadb \
 	libressl \
 	jq \
+	curl \
 	&& sed -i "s%;error_log\ =\ /var/log/php-fpm/error.log%error_log\ =\ /var/log/php-fpm/error.log%" /etc/php7/php-fpm.conf \
 	&& mkdir /run/nginx \
 	&& mv /bootstrap/config/nginx/commons.conf /etc/nginx/conf.d/ \
