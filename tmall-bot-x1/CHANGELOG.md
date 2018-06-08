@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.3.6] - 2018-3-9
 ### Added
 - 同步自 [https://github.com/c1pher-cn/tmall-bot-x1](https://github.com/c1pher-cn/tmall-bot-x1)，新增频道切换功能。
+- 增加 /config/tmall-bot-x1 文件更新流程。
 
 ## [0.3.5] - 2018-3-9
 ### Fixed
