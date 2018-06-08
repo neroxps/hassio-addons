@@ -22,8 +22,10 @@ CONTAINER_TIMEZONE="$(jq -r ".container_timezone" $OPTIONS)"
 HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
 CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
-if [[ "${CONFIG_DIR_TO_CONFIG}" == "true" ]]; then
+ADDONS_VERSION=$(curl -X GET -H "X-HASSIO-KEY:$HASSIO_TOKEN" 'http://hassio/addons/85b28355_tmall-bot-x1/info' | jq -r '.data.version')
+if [[ CONFIG_DIR_TO_CONFIG ]]; then
     CONFIG_DIR="/config/tmall-bot-x1"
+    LOCAL_ADDONS_VERSION=$(cat ${CONFIG_DIR}/addons_version 2> /dev/null)
 else
     CONFIG_DIR="/data/tmall-bot-x1"
 fi
@@ -170,10 +172,6 @@ else
             cat /tmp/update.log
             exit 1
         fi
-        # update /config/tmall-bot-x1
-        if [[ ${CONFIG_DIR_TO_CONFIG} ]];then
-        	mv /config/tmall-bot-x1 /config/tmall-bot-x1-backup
-        fi
     fi
 
     # Update client_id and client_secret
@@ -227,11 +225,19 @@ if [[ "${COLUMN_ZONE}" == "" ]]; then
     ${MYSQL_DB_TMALL} -e "ALTER TABLE \`oauth_devices\` ADD \`zone\` VARCHAR( 255 ) NOT NULL AFTER \`devices\`"
 fi
 
+# Check Tmall-bot-x1 addon version
+if [[ ${CONFIG_DIR_TO_CONFIG} ]] && [[ -z ${LOCAL_ADDONS_VERSION} ]] && [[ "${LOCAL_ADDONS_VERSION}" != "${ADDONS_VERSION}" ]] ; then
+	if [[ -z ${LOCAL_ADDONS_VERSION} ]]; then
+		LOCAL_ADDONS_VERSION='old'
+	fi
+	mv /config/tmall-bot-x1 /config/tmall-bot-x1-${LOCAL_ADDONS_VERSION}
+fi
+
 # Tmall Bot Install
 if [[ ! -d "${CONFIG_DIR}" ]]; then
     echo "[INFO] Tmall Bot Bridge install to the ${CONFIG_DIR}"
     cp -R /bootstrap/tmall-bot-x1 ${CONFIG_DIR%/*}
-    rm -f "${CONFIG_DIR}/tmallx1.sql"
+    echo ${ADDONS_VERSION} > ${CONFIG_DIR}/addons_version
     echo "[INFO] Tmall Bot Bridge installation completed!"
 fi
 
