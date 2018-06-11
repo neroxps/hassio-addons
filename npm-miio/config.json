@@ -1,0 +1,15 @@
+{
+    "name": "npm-miio", 
+    "version": "0.0.1", 
+    "slug": "npm-miio", 
+    "description": "npm-miio", 
+    "url": "https://github.com/neroxps/hassio-addons/tree/master/npm-miio", 
+    "startup": "application", 
+    "boot": "manual", 
+    "host_network": true,
+    "ports": {}, 
+    "map": [], 
+    "options": {}, 
+    "schema": {},
+    "image": "neroxps/{arch}-npm-miio-addon"
+}
