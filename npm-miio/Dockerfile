@@ -9,4 +9,4 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
   && npm config set registry https://registry.npm.taobao.org \
   && npm install -g miio 
 
-CMD ["/usr/bin/miio" "discover"]
+CMD ["sh -c","/usr/bin/miio","discover"]
