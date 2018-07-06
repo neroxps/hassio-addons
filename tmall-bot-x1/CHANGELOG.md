@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.7] - 2018-7-6
+### Fixed
+- 修复语法错误的bug，写变量写少了个$我也是醉了。
+
 ## [0.3.6] - 2018-3-9
 ### Added
 - 同步自 [https://github.com/c1pher-cn/tmall-bot-x1](https://github.com/c1pher-cn/tmall-bot-x1)，新增频道切换功能。
