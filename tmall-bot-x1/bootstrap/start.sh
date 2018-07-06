@@ -23,7 +23,7 @@ HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
 CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
 ADDONS_VERSION=$(curl -X GET -H "X-HASSIO-KEY:$HASSIO_TOKEN" 'http://hassio/addons/85b28355_tmall-bot-x1/info' | jq -r '.data.version')
-if [[ CONFIG_DIR_TO_CONFIG ]]; then
+if [[ ${CONFIG_DIR_TO_CONFIG} ]]; then
     CONFIG_DIR="/config/tmall-bot-x1"
     LOCAL_ADDONS_VERSION=$(cat ${CONFIG_DIR}/addons_version 2> /dev/null)
 else
