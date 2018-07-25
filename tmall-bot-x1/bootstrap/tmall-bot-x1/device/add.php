@@ -24,10 +24,11 @@ $homeassistantURL = $information['homeassistantURL'];
 $homeassistantPASS = $information['homeassistantPASS'];
 $email = $information['email'];
 
-$url = $homeassistantURL."/api/states?api_password=".$homeassistantPASS;
+$url = $homeassistantURL."/api/states";
 $ch = curl_init(); 
    // set url 
 curl_setopt($ch, CURLOPT_URL, $url); 
+curl_setopt($ch, CURLOPT_HTTPHEADER, array("x-ha-access: ".$homeassistantPASS));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 curl_setopt($ch, CURLOPT_TIMEOUT, 2); //设置整个网络请求最长执行时间为2秒
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1); //设置连接目标服务器1秒无响应时判断为超时
