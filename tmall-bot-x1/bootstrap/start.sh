@@ -3,8 +3,12 @@ OPTIONS="/data/options.json"
 if [[ "$(jq -r ".debug" $OPTIONS)" == "true" ]]; then
     set -x
 fi
-HA_URL="http://hassio/homeassistant"
-HA_PASSWD="${HASSIO_TOKEN}"
+if [[ -z HA_URL ]]; then
+    HA_URL="http://hassio/homeassistant"
+fi
+if [[ -z HA_PASSWD ]]; then
+    HA_PASSWD="${HASSIO_TOKEN}"
+fi
 MYSQL_HOST="$(jq -r ".remote_database.mysql_host" $OPTIONS)"
 MYSQL_DB_NAME="$(jq -r ".remote_database.mysql_db_name" $OPTIONS)"
 MYSQL_USER="$(jq -r ".remote_database.mysql_user" $OPTIONS)"
