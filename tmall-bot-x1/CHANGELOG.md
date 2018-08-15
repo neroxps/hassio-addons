@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.10] - 2018-08-15
+### Added
+- 适配非 Addons 用户使用。
+
 ## [0.3.9] - 2018-07-25
 ### Fixed
 - 适配 hassio api proxy 改动。
