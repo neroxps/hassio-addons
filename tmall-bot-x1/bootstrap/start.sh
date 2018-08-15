@@ -135,7 +135,8 @@ if [[ "${TMALL_DB_TABLES}" == "" ]]; then
     echo "[INFO] Tmall databases initialization....."
     sed -i "s/%%{CLIENT_ID}%%/${CLIENT_ID}/" /bootstrap/tmallx1.sql
     sed -i "s/%%{CLIENT_SECRET}%%/${CLIENT_SECRET}/" /bootstrap/tmallx1.sql
-    sed -i "s/%%{HA_PASSWD}%%/${HASSIO_TOKEN}/" /bootstrap/tmallx1.sql
+    sed -i "s/%%{HA_URL}%%/${HA_URL}/" /bootstrap/tmallx1.sql
+    sed -i "s/%%{HA_PASSWD}%%/${HA_PASSWD}/" /bootstrap/tmallx1.sql
     ${MYSQL} ${MYSQL_DB_NAME} < /bootstrap/tmallx1.sql
     ${MYSQL_DB_TMALL} -e "
         show tables;

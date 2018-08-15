@@ -225,7 +225,7 @@ CREATE TABLE `user_data` (
 
 LOCK TABLES `user_data` WRITE;
 /*!40000 ALTER TABLE `user_data` DISABLE KEYS */;
-INSERT INTO `user_data` VALUES (1,'user001','http://hassio/homeassistant','%%{HA_PASSWD}%%','个人用户','email@email.com','2018-06-02 14:44:00','c1pher-git');
+INSERT INTO `user_data` VALUES (1,'user001','%%{HA_URL}%%','%%{HA_PASSWD}%%','个人用户','email@email.com','2018-06-02 14:44:00','c1pher-git');
 /*!40000 ALTER TABLE `user_data` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
