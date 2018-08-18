@@ -3,10 +3,10 @@ OPTIONS="/data/options.json"
 if [[ "$(jq -r ".debug" $OPTIONS)" == "true" ]]; then
     set -x
 fi
-if [[ -z HA_URL ]]; then
+if [[ -z ${HA_URL} ]]; then
     HA_URL="http://hassio/homeassistant"
 fi
-if [[ -z HA_PASSWD ]]; then
+if [[ -z ${HA_PASSWD} ]]; then
     HA_PASSWD="${HASSIO_TOKEN}"
 fi
 MYSQL_HOST="$(jq -r ".remote_database.mysql_host" $OPTIONS)"
@@ -135,7 +135,7 @@ if [[ "${TMALL_DB_TABLES}" == "" ]]; then
     echo "[INFO] Tmall databases initialization....."
     sed -i "s/%%{CLIENT_ID}%%/${CLIENT_ID}/" /bootstrap/tmallx1.sql
     sed -i "s/%%{CLIENT_SECRET}%%/${CLIENT_SECRET}/" /bootstrap/tmallx1.sql
-    sed -i "s/%%{HA_URL}%%/${HA_URL}/" /bootstrap/tmallx1.sql
+    sed -i "s#%%{HA_URL}%%#${HA_URL}#" /bootstrap/tmallx1.sql
     sed -i "s/%%{HA_PASSWD}%%/${HA_PASSWD}/" /bootstrap/tmallx1.sql
     ${MYSQL} ${MYSQL_DB_NAME} < /bootstrap/tmallx1.sql
     ${MYSQL_DB_TMALL} -e "
@@ -197,13 +197,13 @@ else
 fi
 echo "----------------------------------------------------------------"
 
-# Update ha_url and passwd from HASSIO_TOKEN.
+# Update ha_url and passwd from HA_PASSWD.
 RESULT=$(${MYSQL_DB_TMALL} -N -e 'select * from user_data' | sed -n '2p')
-DB_HASSIO_TOKEN=$(echo $RESULT | awk '{print $4}')
-if [[ "${HASSIO_TOKEN}" != "${DB_HASSIO_TOKEN}" ]]; then
+DB_HA_PASSWD=$(echo $RESULT | awk '{print $4}')
+if [[ "${HA_PASSWD}" != "${DB_HA_PASSWD}" ]]; then
     ${MYSQL_DB_TMALL} -e "
         UPDATE user_data
-        SET homeassistantPASS=\"${HASSIO_TOKEN}\"
+        SET homeassistantPASS=\"${HA_PASSWD}\"
         WHERE id=1
     "
 fi
