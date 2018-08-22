@@ -3,10 +3,10 @@
   "version": "0.1.10",
   "slug": "nginx_proxy",
   "description": "Nginx Proxy for multiple VHOSTS",
-  "url": "https://github.com/bestlibre/hassio-addons/tree/master/nginx_proxy",
-  "startup": "system",
+  "url": "https://github.com/neroxps/hassio-addons/tree/master/nginx_proxy",
+  "startup": "application",
   "boot": "auto",
-  "image": "bestlibre/{arch}-nginx-proxy",
+  "image": "neroxps/{arch}-nginx-proxy",
   "options": {
     "vhosts":[
       {"vhost": "homeassistant.domain.tld",
