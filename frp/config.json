@@ -1,6 +1,6 @@
 {
     "name":"frp",
-    "version":"0.0.2",
+    "version":"0.0.3",
     "slug":"frp",
     "description":"frp",
     "url":"https://github.com/neroxps/hassio-addons/tree/master/frp",
@@ -23,6 +23,8 @@
     "schema":{
         "cmd":[
             "str?"
-        ]
+        ],
+        "frp_version":"str?",
+        "debug":"bool"
     }
 }
