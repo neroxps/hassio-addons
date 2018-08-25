@@ -1,0 +1,27 @@
+{
+    "name":"frp",
+    "version":"0.0.1",
+    "slug":"frp",
+    "description":"frp",
+    "url":"https://github.com/neroxps/hassio-addons/tree/master/frp",
+    "startup":"initialize",
+    "boot":"auto",
+    "ports":{
+
+    },
+    "map":[
+        "config:rw",
+        "share:rw"
+    ],
+    "options":{
+        "cmd":[
+            "echo 'frp runing'",
+            "/share/frp/frps -c /share/frp/frps.ini"
+        ]
+    },
+    "schema":{
+        "cmd":[
+            "str?"
+        ]
+    }
+}
