@@ -1,11 +1,12 @@
 {
     "name":"frp",
-    "version":"0.0.1",
+    "version":"0.0.2",
     "slug":"frp",
     "description":"frp",
     "url":"https://github.com/neroxps/hassio-addons/tree/master/frp",
     "startup":"initialize",
     "boot":"auto",
+    "host_network":true,
     "ports":{
 
     },
