@@ -1,10 +1,12 @@
 #!/bin/bash
 options="/data/options.json"
 [[ $(jq -r '.debug' $options) == "true" ]] && set -x
+auto_download=$(jq -r '.auto_download' $options)
 cmd_num=$(jq -r '.cmd | length' $options)
 version=$(jq -r '.frp_version' $options)
-remote_version=$(curl -Ls https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.tag_name' | sed 's/v//')
+[[ "$auto_download" == "true" ]] && remote_version=$(curl -Ls https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.tag_name' | sed 's/v//')
 [[ "$version" == "null" ]] || [[ "$version" == "" ]] && version=$remote_version
+
 app_path="/share/frp"
 app_root_path=${app_path%/*}
 arch=$(uname -m)
@@ -19,7 +21,7 @@ select_machine(){
 				machine="386"
 			fi
 		;;
-		"arm*" | "armv7l" | "armv61" | "aarch64")
+		"arm"* | "armv7l" | "armv61" | "aarch64")
 			if [[ $(getconf LONG_BIT) == "64" ]]; then
 				machine="arm64"
 			else
@@ -37,12 +39,13 @@ download(){
 	local i=10
 	while [[ ! -f $2 ]]; do
 		# wget --no-check-certificate  "$1" -O "$2"
-		wget --no-check-certificate "$1" -O "$2"
+		wget --no-check-certificate "$1" -O /tmp/tmp_file
 		# curl -o "$2" -sSL "$1"
-		[[ $i -eq 0 ]] && break
+		[[ $? -eq 0 ]] || [[ $i -eq 0 ]] && break
 		let i--
 	done
-	[[ ! -f $2 ]] && echo "[Error]: Unreachable address $1 " && exit 1
+	[[ ! -f /tmp/tmp_file ]] && [[ ! -f $2 ]] && echo "[Error]: Unreachable address $1 " && exit 1
+	[[ ! -f $2 ]] && mv /tmp/tmp_file $2
 }
 
 # frp download
@@ -58,24 +61,33 @@ frp_install(){
 	tar xzf ${file_path} -C $app_root_path
 	cp -f ${app_root_path}/${file_dir}/frps ${app_path}/
 	cp -f ${app_root_path}/${file_dir}/frpc ${app_path}/
+	cp -f ${app_root_path}/${file_dir}/frpc_full.ini ${app_path}/
+	cp -f ${app_root_path}/${file_dir}/frps_full.ini ${app_path}/
 	[[ ! -f "${app_path}/frps.ini" ]] && cp ${app_root_path}/${file_dir}/frps.ini ${app_path}/
 	[[ ! -f "${app_path}/frpc.ini" ]] && cp ${app_root_path}/${file_dir}/frpc.ini ${app_path}/
 	rm -rf ${app_root_path}/${file_dir}
 	rm -f ${file_path}
-	echo $version > "${app_path}/.version"
 }
 
 # check_installed
-if [[ ! -d $app_path ]]; then
-	frp_install
-else
-	local_version=$(cat $app_path/.version)
-	# check_change_version
-	if [[ "$version" != "$local_version" ]]; then
-		cp -R $app_path "${app_root_path}/frp_${local_version}"
+auto_install(){
+	if [[ -f $app_path/frps ]] || [[ -f $app_path/frpc ]]; then
+		local_version=$(if [[ -f $app_path/frps ]];then
+							 $app_path/frps --version
+						else
+							 $app_path/frpc --version
+						fi)
+		# check_change_version
+		if [[ "$version" != "$local_version" ]]; then
+			cp -R $app_path "${app_root_path}/frp_${local_version}"
+			frp_install
+		fi
+	else
 		frp_install
 	fi
-fi
+}
+
+[[ "$auto_download" == "true" ]] && auto_install
 
 # run shell
 for (( i = 0; i < $cmd_num; i++ )); do
