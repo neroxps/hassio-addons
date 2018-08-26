@@ -1,10 +1,6 @@
 {
     "name":"frp",
-<<<<<<< HEAD
-    "version":"0.0.3",
-=======
     "version":"0.0.4",
->>>>>>> 40124259f568e335423fd6dad83235e9424974de
     "slug":"frp",
     "description":"frp",
     "url":"https://github.com/neroxps/hassio-addons/tree/master/frp",
