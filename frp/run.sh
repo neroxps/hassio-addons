@@ -19,7 +19,7 @@ select_machine(){
 				machine="386"
 			fi
 		;;
-		"arm*" | "arm71" | "armv61" | "aarch64")
+		"arm*" | "armv7l" | "armv61" | "aarch64")
 			if [[ $(getconf LONG_BIT) == "64" ]]; then
 				machine="arm64"
 			else
