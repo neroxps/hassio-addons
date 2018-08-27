@@ -4,8 +4,8 @@
 
 ```
 {
-	"auto_download":true,
-	"frp_version":"0.21.0",
+    "auto_download":true,
+    "frp_version":"0.21.0",
     "debug":true,
     "cmd":[
         "echo 'frp runing'",
