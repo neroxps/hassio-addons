@@ -39,6 +39,7 @@ download(){
 	local i=10
 	while [[ ! -f $2 ]]; do
 		# wget --no-check-certificate  "$1" -O "$2"
+		echo "[info]: Start downloading file $2"
 		wget --no-check-certificate "$1" -O /tmp/tmp_file
 		# curl -o "$2" -sSL "$1"
 		[[ $? -eq 0 ]] || [[ $i -eq 0 ]] && break
@@ -83,6 +84,7 @@ auto_install(){
 			frp_install
 		fi
 	else
+		echo "[info]: The frp file was not found and the installation process started."
 		frp_install
 	fi
 }

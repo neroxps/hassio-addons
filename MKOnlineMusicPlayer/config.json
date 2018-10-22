@@ -1,0 +1,23 @@
+{
+    "name": "MK Online Music Player", 
+    "version": "0.0.1", 
+    "slug": "mkonlinemusicplayer", 
+    "description": "云音乐平台", 
+    "url": "https://github.com/neroxps/hassio-addons/tree/master/mkonlinemusicplayer", 
+    "startup": "application", 
+    "boot": "auto", 
+    "ports": {
+        "80/tcp": 80
+    }, 
+    "map": [], 
+    "options": {
+        "netease_cookie":""
+    }, 
+    "schema": {
+        "netease_cookie":"str?",
+        "https":"bool?",
+        "httpd_error_log":"bool?",
+        "debug":"bool?"
+    },
+    "image": "neroxps/{arch}-mk-online-music-player-addon"
+}
