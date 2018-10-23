@@ -1,0 +1,34 @@
+{
+    "name": "Shadowsocks-libev Cilent", 
+    "version": "0.0.1", 
+    "slug": "shadowsocks-libev-cilent", 
+    "description": "影梭客户端", 
+    "url": "https://github.com/neroxps/hassio-addons/tree/master/shadowsocks-libev-cilent", 
+    "startup": "application", 
+    "boot": "auto",  
+    "ports": {
+        "1080/tcp": 1080
+    }, 
+    "map": [
+        "share:rw"
+    ], 
+    "options": {
+        "server":"<shadowsocks server IP or Domain>",
+        "server_port":"<shadowsocks server port>",
+        "local_address":"0.0.0.0",
+        "local_port":"1080",
+        "server_password":"",
+        "encrypt_method":"<shadowsocks server encrypt method>",
+        "args":"--fast-open"
+    }, 
+    "schema": {
+        "server":"str",
+        "server_port":"port",
+        "local_address":"str",
+        "local_port":"port",
+        "server_password":"str",
+        "encrypt_method":"str",
+        "args":"str?"
+    },
+    "image": "neroxps/{arch}-shadowsocks-libev-cilent-addon"
+}
