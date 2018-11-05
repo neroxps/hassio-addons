@@ -6,6 +6,7 @@
     "url": "https://github.com/neroxps/hassio-addons/tree/master/tmall-bot-x1", 
     "startup": "application", 
     "boot": "auto", 
+    "hassio_api": true,
     "homeassistant_api": true, 
     "ports": {
         "80/tcp": 80,
