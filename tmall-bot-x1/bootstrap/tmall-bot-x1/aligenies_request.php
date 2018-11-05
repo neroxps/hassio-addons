@@ -271,7 +271,7 @@ function  Device_status($obj)
              $opts = array(
                 'http' => array(
                      'method' => "GET",
-                         'header' => "x-ha-access: ".$PASS."\r\n"
+                         'header' => "Authorization: Bearer ".$PASS."\r\n"
                             )
                 );
             $context = stream_context_create($opts);
@@ -294,7 +294,7 @@ function  Device_status($obj)
          $opts = array(
             'http' => array(
                  'method' => "GET",
-                     'header' => "x-ha-access: ".$PASS."\r\n"
+                     'header' => "Authorization: Bearer ".$PASS."\r\n"
                         )
             );
         $context = stream_context_create($opts);
@@ -588,8 +588,8 @@ function  Device_control($obj)
             $opts = array(
             'http' => array(
                  'method' => "POST",
-                     'header' => "Content-Type: application/json"
-                        ."x-ha-access: ".$PASS."\r\n",
+                     'header' => "Content-Type: application/json\r\n"
+                        ."Authorization: Bearer ".$PASS."\r\n",
                      'content'=> $post_string
                         )
             );
@@ -612,7 +612,7 @@ function  Device_control($obj)
             'http' => array(
                  'method' => "POST",
                      'header' => "Content-Type: application/json\r\n"
-                        ."x-ha-access: ".$PASS."\r\n",
+                        ."Authorization: Bearer ".$PASS."\r\n",
                      'content'=> $post_string
                         )
             );
