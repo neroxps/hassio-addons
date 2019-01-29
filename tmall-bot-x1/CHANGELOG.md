@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.14] - 2019-11-29
+### Fixed
+- 隐藏 start.sh 启动脚本 curl 回显
+- 修复 start.sh 不兼容非 hassio 系统修改 HA_PASSWD 的 bug
+- 修复 add.php 和 addVirtualDevice.php 不支持 long live token 导致无法获取设备列表的 bug
+
 ## [0.3.12] - 2018-11-05
 ### Fixed
 - 修复设置灯光亮度，音量，调台，灯光颜色会报401认证错误的bug。
