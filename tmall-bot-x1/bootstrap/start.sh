@@ -26,7 +26,7 @@ CONTAINER_TIMEZONE="$(jq -r ".container_timezone" $OPTIONS)"
 HTTPD_LOG="$(jq -r ".httpd_log" $OPTIONS)"
 HTTPD_ERROR_LOG="$(jq -r ".httpd_error_log" $OPTIONS)"
 CONFIG_DIR_TO_CONFIG="$(jq -r ".config_dir_to_config" $OPTIONS)"
-ADDONS_VERSION=$(curl -X GET -H "X-HASSIO-KEY:$HASSIO_TOKEN" 'http://hassio/addons/85b28355_tmall-bot-x1/info' | jq -r '.data.version')
+ADDONS_VERSION=$(curl -s -X GET -H "X-HASSIO-KEY:$HASSIO_TOKEN" 'http://hassio/addons/85b28355_tmall-bot-x1/info' | jq -r '.data.version')
 if [[ ${CONFIG_DIR_TO_CONFIG} == "true" ]]; then
     CONFIG_DIR="/config/tmall-bot-x1"
     LOCAL_ADDONS_VERSION=$(cat ${CONFIG_DIR}/addons_version 2> /dev/null)
@@ -161,7 +161,7 @@ else
                 UNIQUE inx_user_id (user_id)
             );
             INSERT INTO \`user_data\`
-            VALUES (1, 'user001', '${HA_URL}', '${HASSIO_TOKEN}', '个人用户'
+            VALUES (1, 'user001', '${HA_URL}', '${HA_PASSWD}', '个人用户'
                 , 'email@email.com', '2018-06-02 14:44:00', 'c1pher-git');
 			alter table oauth_devices add column user_id VARCHAR(255);
 			UPDATE oauth_devices SET user_id='user001';
