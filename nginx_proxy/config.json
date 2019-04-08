@@ -28,5 +28,6 @@
     ]
   },
   "ports": {"80/tcp": 80, "443/tcp": 443},
+  "arch": [ "armhf", "armv7", "aarch64", "amd64", "i386"],
   "map": ["ssl"]
 }

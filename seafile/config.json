@@ -26,5 +26,6 @@
         "seafile_admin_email":"email",
         "seafile_admin_password":"str"
     },
+    "arch": [ "amd64", "i386"],
     "image": "neroxps/{arch}-seafile-addon"
 }

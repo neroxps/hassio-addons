@@ -19,5 +19,6 @@
         "httpd_error_log":"bool?",
         "debug":"bool?"
     },
+    "arch": [ "armhf", "armv7", "aarch64", "amd64", "i386"],
     "image": "neroxps/{arch}-mk-online-music-player-addon"
 }

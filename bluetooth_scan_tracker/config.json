@@ -8,6 +8,7 @@
   "startup": "application",
   "boot": "auto",
   "host_network": "true",
+  "arch": [ "armhf", "armv7", "aarch64", "amd64", "i386"],
   "ports": {},
   "map": [],
   "options": {

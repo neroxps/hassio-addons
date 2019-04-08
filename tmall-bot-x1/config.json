@@ -50,5 +50,6 @@
         "container_timezone": "str?",
         "debug":"bool?"
     },
+    "arch": [ "armhf", "armv7", "aarch64", "amd64", "i386"],
     "image": "neroxps/{arch}-tmall-bot-x1-addon"
 }

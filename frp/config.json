@@ -21,6 +21,7 @@
             "/share/frp/frps -c /share/frp/frps.ini"
         ]
     },
+    "arch": [ "armhf", "armv7", "aarch64", "amd64", "i386"],
     "schema":{
         "auto_download":"bool",
         "frp_version":"str?",
